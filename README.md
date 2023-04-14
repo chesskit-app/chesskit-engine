@@ -4,15 +4,24 @@ A Swift package for chess engines.
 
 ## Usage
 
-* Add a package dependency to your Xcode project or Swift Package with the following URL:
-`https://github.com/chesskit-app/chesskit-engine`
+## Usage
 
-* Import `ChessKitEngine` to use it in a source file:
+* Add a package dependency to your Xcode project or Swift Package:
+``` swift
+.package(url: "https://github.com/chesskit-app/chesskit-engine", from: "0.1.0")
+```
+
+* Next you can import `ChessKitEngine` to use it in your Swift code:
 ``` swift
 import ChessKitEngine
 
 // ...
+
 ```
+
+## Features
+
+coming soon...
 
 ## Supported Engines
 
