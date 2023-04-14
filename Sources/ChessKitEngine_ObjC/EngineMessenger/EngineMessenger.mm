@@ -17,7 +17,7 @@ NSFileHandle *_pipeReadHandle;
     return [self initWithEngineType:EngineTypeStockfish];
 }
 
-- (id)initWithEngineType: (EngineType) type {
+- (id)initWithEngineType: (EngineType_ObjC) type {
     self = [super init];
     
     if (self) {

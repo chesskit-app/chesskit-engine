@@ -7,7 +7,7 @@
 #define EngineMessenger_h
 
 #import <Foundation/Foundation.h>
-#import "EngineType.h"
+#import "EngineType_ObjC.h"
 
 @protocol EngineMessengerDelegate;
 @class EngineMessenger;
@@ -27,7 +27,7 @@
 /// For possible types, see `EngineType`. The default type
 /// is `EngineTypeStockfish`.
 ///
-- (_Nonnull id)initWithEngineType: (EngineType) type;
+- (_Nonnull id)initWithEngineType: (EngineType_ObjC) type;
 
 /// Opens communicatation channel with the registered engine.
 ///

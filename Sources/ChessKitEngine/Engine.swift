@@ -32,7 +32,7 @@ public class Engine {
     /// supported Stockfish version.
     ///
     public init(type: EngineType = .stockfish) {
-        messenger = EngineMessenger(engineType: type)
+        messenger = EngineMessenger(engineType: type.objc)
         messenger.delegate = self
     }
     
