@@ -4,8 +4,6 @@ A Swift package for chess engines.
 
 ## Usage
 
-## Usage
-
 * Add a package dependency to your Xcode project or Swift Package:
 ``` swift
 .package(url: "https://github.com/chesskit-app/chesskit-engine", from: "0.1.0")
