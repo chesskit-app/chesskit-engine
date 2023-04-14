@@ -13,7 +13,7 @@ let package = Package(
     products: [
         .library(
             name: "ChessKitEngine",
-            targets: ["ChessKitEngine"]
+            targets: ["ChessKitEngine", "ChessKitEngine_ObjC", "ChessKitEngine_Cxx"]
         )
     ],
     targets: [
@@ -25,7 +25,7 @@ let package = Package(
             name: "ChessKitEngine_ObjC",
             dependencies: ["ChessKitEngine_Cxx"]
         ),
-        .executableTarget(name: "ChessKitEngine_Cxx"),
+        .target(name: "ChessKitEngine_Cxx"),
         .testTarget(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"]
