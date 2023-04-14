@@ -1,0 +1,12 @@
+name: ChessKitEngine Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    uses: chesskit-app/workflows/.github/workflows/test-swift-package.yml@master
+    secrets: inherit
