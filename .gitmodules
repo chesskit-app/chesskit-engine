@@ -1,0 +1,3 @@
+[submodule "Sources/ChessKitEngine_Cxx/Engines/Stockfish"]
+	path = Sources/ChessKitEngine_Cxx/Engines/Stockfish
+	url = git@github.com:chesskit-app/Stockfish.git
