@@ -7,7 +7,7 @@ public extension EngineCommand {
     
     /// Possible positions that can be passed to
     /// `EngineCommand.position`.
-    enum PositionString: RawRepresentable {
+    enum PositionString: Equatable, RawRepresentable {
         /// Any FEN position, given in the provided `String`.
         case fen(String)
         /// The starting position.
@@ -27,8 +27,9 @@ public extension EngineCommand {
                 self = .startpos
             } else if rawValue.starts(with: "fen") {
                 let tokens = rawValue.components(separatedBy: " ")
-                guard tokens.count == 2 else { return nil }
-                self = .fen(tokens[1])
+                // FEN strings must have 6 components
+                guard tokens.count == 7 else { return nil }
+                self = .fen(tokens[1...6].joined(separator: " "))
             } else {
                 return nil
             }

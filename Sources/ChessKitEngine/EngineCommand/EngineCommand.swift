@@ -30,7 +30,7 @@ public enum EngineCommand {
     ///
     /// See [UCI protocol documentation](https://backscattering.de/chess/uci/2006-04.txt)
     /// for more information.
-    case setoption(id: String, value: String?)
+    case setoption(id: String, value: String? = nil)
     
     /// `"ucinewgame"`
     ///

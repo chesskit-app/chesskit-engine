@@ -1,7 +1,16 @@
-# [Unreleased]
+# ChessKitEngine 0.1.3
+Released Saturday, April 15, 2023.
 
-* Simplify internal Obj-C and C++ targets
+#### Improvements
+* Add default `nil` value for `value` parameter in `EngineCommand.setoption(id:value:)`
+
+#### Bug Fixes
 * Fix `loggingEnabled` default value to match documentation
+* Fix `EngineCommand.PositionString(rawValue:)` when passing a FEN string
+
+#### Technical Improvements
+* Simplify internal Obj-C and C++ targets
+* Increase test coverage
 
 # ChessKitEngine 0.1.2
 Released Friday, April 14, 2023.
