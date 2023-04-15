@@ -7,7 +7,7 @@
 #define ChessKitEngine_ObjC_h
 
 #include "../EngineMessenger/EngineMessenger.h"
-#include "../Engines/EngineType_ObjC.h"
+#include "../Engines/EngineType_objc.h"
 #include "../Logging/Logging.h"
 
 #endif /* ChessKitEngineCore_h */

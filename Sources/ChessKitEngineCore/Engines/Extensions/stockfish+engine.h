@@ -6,7 +6,7 @@
 #ifndef stockfish_engine_h
 #define stockfish_engine_h
 
-#import "../engine.h"
+#import "engine.h"
 #import <string>
 
 /// Stockfish implementation of `Engine`.

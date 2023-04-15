@@ -1,6 +1,6 @@
 # 🤖 ChessKitEngine
 
-[![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/github/chesskit-app/chesskit-engine)
+[![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/gh/chesskit-app/chesskit-engine)
 
 A Swift package for chess engines.
 
@@ -70,6 +70,13 @@ engine.receiveResponse = { response in
 * Terminate engine communication
 ``` swift
 engine.stop()
+```
+
+* Enable engine response logging
+``` swift
+// Logging is off by default since engines can be very
+// verbose while analyzing positions and returning evaluations.
+engine.loggingEnabled = true
 ```
 
 ## Supported Engines
