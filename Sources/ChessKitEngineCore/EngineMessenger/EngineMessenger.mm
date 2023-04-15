@@ -76,7 +76,7 @@ NSFileHandle *_pipeReadHandle;
     NSArray<NSString *> *output = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
     
     [output enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [self.delegate messenger:self didReceiveResponse:obj];
+        [self responseHandler](obj);
     }];
 }
 

@@ -33,7 +33,17 @@ public class Engine {
     ///
     public init(type: EngineType = .stockfish) {
         messenger = EngineMessenger(engineType: type.objc)
-        messenger.delegate = self
+        
+        messenger.responseHandler = { [weak self] response in
+            guard let self else { return }
+            
+            if let parsedResponse = EngineResponse(rawValue: response) {
+                self.log(parsedResponse.rawValue)
+                self.receiveResponse(parsedResponse)
+            } else if !response.isEmpty {
+                self.log(response)
+            }
+        }
     }
     
     deinit {
@@ -119,24 +129,6 @@ extension Engine {
     private func log(_ message: String) {
         if loggingEnabled {
             Logging.print(message)
-        }
-    }
-    
-}
-
-// MARK: - EngineMessengerDelegate
-
-extension Engine: EngineMessengerDelegate {
-    
-    public func messenger(
-        _ messenger: EngineMessenger,
-        didReceiveResponse response: String
-    ) {
-        if let parsedResponse = EngineResponse(rawValue: response) {
-            log(parsedResponse.rawValue)
-            receiveResponse(parsedResponse)
-        } else if !response.isEmpty {
-            log(response)
         }
     }
     

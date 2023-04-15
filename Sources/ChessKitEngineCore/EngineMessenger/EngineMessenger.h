@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "../Engines/EngineType_objc.h"
 
-@protocol EngineMessengerDelegate;
 @class EngineMessenger;
 
 # pragma mark - EngineMessenger
@@ -17,8 +16,14 @@
 /// Messenger to communicate with the specified chess engine.
 @interface EngineMessenger : NSObject
 
-/// The delegate used to receive responses from the registered engine.
-@property (nonatomic, weak, nullable) id<EngineMessengerDelegate> delegate;
+/// Called whenever a response is received from the engine.
+///
+/// - parameter response: The response from the engine. The string should
+/// be expected to be a documented response in the [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt).
+///
+/// Engines work asynchronously so use this block to subscribe to
+/// any commands received from the engine.
+@property (nullable) void (^ responseHandler)(NSString * _Nonnull response);
 
 /// Initializes an engine with the desired type.
 ///
@@ -27,7 +32,7 @@
 /// For possible types, see `EngineType`. The default type
 /// is `EngineTypeStockfish`.
 ///
-- (_Nonnull id)initWithEngineType: (EngineType_objc) type;
+- (id _Nonnull)initWithEngineType: (EngineType_objc) type;
 
 /// Opens communicatation channel with the registered engine.
 ///
@@ -46,25 +51,6 @@
 /// The string should be a documented command in the [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt).
 ///
 - (void) sendCommand: (NSString* _Nonnull) command;
-
-@end
-
-# pragma mark - EngineMessengerDelegate
-
-/// Delegate which provides a method for receiving chess engine responses.
-@protocol EngineMessengerDelegate
-
-/// Called whenever a response is received from the engine.
-///
-/// - parameter messenger: The messenger that is facilitating
-/// engine communication.
-/// - parameter respones: The response from the engine. The string should
-/// be expected to be a documented response in the [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt).
-///
-/// Engines work asynchronously so use this method to subscribe to
-/// any commands received from the engine.
-///
-- (void)messenger:(EngineMessenger * _Nonnull)messenger didReceiveResponse:(NSString * _Nonnull)response;
 
 @end
 
