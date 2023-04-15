@@ -1,4 +1,4 @@
-# 🤖 ChessKitEngine
+# ♟️🤖 ChessKitEngine
 
 [![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/gh/chesskit-app/chesskit-engine)
 
@@ -25,6 +25,7 @@ import ChessKitEngine
 
 * Initialize an engine and set response handler
 ``` swift
+// create Stockfish engine
 let engine = Engine(type: .stockfish)
 
 // set response handler
@@ -32,15 +33,22 @@ engine.receiveResponse = { response in
     print(response)
 }
 
+// start listening for engine responses
 engine.start()
 ```
 
 * Send [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt) commands
 ``` swift
+// check that engine is running before sending commands
 guard engine.isRunning else { return }
 
+// stop any current engine processing
 engine.send(command: .stop)
+
+// set engine position to standard starting chess position
 engine.send(command: .position(.startpos))
+
+// start engine analysis with maximum depth of 15
 engine.send(command: .go(depth: 15))
 ```
 
@@ -69,21 +77,24 @@ engine.receiveResponse = { response in
 
 * Terminate engine communication
 ``` swift
+// stop listening for engine responses
 engine.stop()
 ```
 
 * Enable engine response logging
 ``` swift
+// log engine commands and responses to the console
+engine.loggingEnabled = true
+
 // Logging is off by default since engines can be very
 // verbose while analyzing positions and returning evaluations.
-engine.loggingEnabled = true
 ```
 
 ## Supported Engines
 
 The following engines are currently supported:
 
-* [Stockfish 15.1](https://github.com/official-stockfish/Stockfish) ([License](https://github.com/official-stockfish/Stockfish/blob/acb0d204d56e16398c58822df2cc60b90ef1ae85/Copying.txt))
+* [Stockfish 15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) ([License](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt)) ([Options Reference](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options))
 
 ## Author
 
