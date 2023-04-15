@@ -1,5 +1,7 @@
 # 🤖 ChessKitEngine
 
+[![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/github/chesskit-app/chesskit-engine)
+
 A Swift package for chess engines.
 
 `ChessKitEngine` implements the [Universal Chess Interface protocol](https://backscattering.de/chess/uci/2006-04.txt) for communication between [chess engines](https://en.wikipedia.org/wiki/Chess_engine) and user interfaces built with Swift.
@@ -35,13 +37,33 @@ engine.start()
 
 * Send [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt) commands
 ``` swift
-import ChessKit
-let position = Position()
+guard engine.isRunning else { return }
 
-if engine.isRunning {
-    engine.send(command: .stop)
-    engine.send(command: position)
-    engine.send(command: .go(depth: 15))
+engine.send(command: .stop)
+engine.send(command: .position(.startpos))
+engine.send(command: .go(depth: 15))
+```
+
+* Update engine position after a move is made
+``` swift
+// FEN after 1. e4
+let newPosition = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+
+engine.send(command: .stop)
+engine.send(command: .position(.fen(newPosition))
+engine.send(command: .go(depth: 15))
+```
+
+* Receive engine's analysis of current position
+``` swift
+// receiveResponse is called whenever the engine publishes a response
+engine.receiveResponse = { response in
+    switch response {
+    case let .info(info):
+        print(info.score)   // engine evaluation score in centipawns
+        print(info.pv)      // array of move strings representing best line
+    default:
+        break
 }
 ```
 
