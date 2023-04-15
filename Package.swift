@@ -19,13 +19,11 @@ let package = Package(
     targets: [
         .target(
             name: "ChessKitEngine",
-            dependencies: ["ChessKitEngine_ObjC"]
+            dependencies: ["ChessKitEngineCore"]
         ),
         .target(
-            name: "ChessKitEngine_ObjC",
-            dependencies: ["ChessKitEngine_Cxx"]
+            name: "ChessKitEngineCore"
         ),
-        .target(name: "ChessKitEngine_Cxx"),
         .testTarget(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"]

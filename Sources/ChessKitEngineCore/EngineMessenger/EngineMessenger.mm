@@ -4,7 +4,7 @@
 //
 
 #import "EngineMessenger.h"
-#import "../../ChessKitEngine_Cxx/include/ChessKitEngine_Cxx.h"
+#import "../Engines/Extensions/stockfish+engine.h"
 
 @implementation EngineMessenger : NSObject
 
@@ -17,7 +17,7 @@ NSFileHandle *_pipeReadHandle;
     return [self initWithEngineType:EngineTypeStockfish];
 }
 
-- (id)initWithEngineType: (EngineType_ObjC) type {
+- (id)initWithEngineType: (EngineType_objc) type {
     self = [super init];
     
     if (self) {

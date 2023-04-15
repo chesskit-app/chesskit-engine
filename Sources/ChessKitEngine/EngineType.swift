@@ -3,14 +3,15 @@
 //  ChessKitEngine
 //
 
-import ChessKitEngine_ObjC
+import ChessKitEngineCore
 
+/// Possible engines available in `ChessKitEngine`.
 public enum EngineType: Int {
     
     case stockfish
     
     /// Internal mapping from Swift to Obj-C type.
-    var objc: EngineType_ObjC {
+    var objc: EngineType_objc {
         switch self {
         case .stockfish:    return .stockfish
         }
@@ -35,10 +36,6 @@ public enum EngineType: Int {
 // MARK: - CaseIterable
 
 extension EngineType: CaseIterable {
-    
-    public static var allCases: [EngineType] {
-        [.stockfish]
-    }
     
 }
 

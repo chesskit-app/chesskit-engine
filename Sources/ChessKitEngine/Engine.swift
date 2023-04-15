@@ -3,7 +3,7 @@
 //  ChessKitEngine
 //
 
-import ChessKitEngine_ObjC
+import ChessKitEngineCore
 
 public class Engine {
     
@@ -15,7 +15,7 @@ public class Engine {
     /// If set to `true`, engine commands and responses
     /// will be logged to the console. The default value is
     /// `false`.
-    public var loggingEnabled = true
+    public var loggingEnabled = false
     
     /// Whether the engine is currently running.
     ///
@@ -127,6 +127,7 @@ extension Engine {
 // MARK: - EngineMessengerDelegate
 
 extension Engine: EngineMessengerDelegate {
+    
     public func messenger(
         _ messenger: EngineMessenger,
         didReceiveResponse response: String
@@ -138,4 +139,5 @@ extension Engine: EngineMessengerDelegate {
             log(response)
         }
     }
+    
 }

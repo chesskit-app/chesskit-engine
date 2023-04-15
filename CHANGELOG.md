@@ -1,3 +1,8 @@
+# [Unreleased]
+
+* Simplify internal Obj-C and C++ targets
+* Fix `loggingEnabled` default value to match documentation
+
 # ChessKitEngine 0.1.2
 Released Friday, April 14, 2023.
 
