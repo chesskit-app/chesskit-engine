@@ -22,7 +22,8 @@ let package = Package(
             dependencies: ["ChessKitEngineCore"]
         ),
         .target(
-            name: "ChessKitEngineCore"
+            name: "ChessKitEngineCore",
+            cxxSettings: [.unsafeFlags(["-w"])]
         ),
         .testTarget(
             name: "ChessKitEngineTests",
