@@ -2,9 +2,54 @@
 
 import PackageDescription
 
-// MARK: - Excluded Files
+// MARK: - Package Configuration
 
-private let ChessKitEngineCoreExcludes = [
+let package = Package(
+    name: "ChessKitEngine",
+    platforms: [
+        .iOS(.v16), .watchOS(.v9), .macOS(.v13), .tvOS(.v16)
+    ],
+    products: [
+        .library(
+            name: "ChessKitEngine",
+            targets: ["ChessKitEngine"]
+        )
+    ],
+    targets: [
+        .target(
+            name: "ChessKitEngine",
+            dependencies: ["ChessKitEngineCore"],
+            resources: [
+                .copy("Resources/192x15_network"),
+                .copy("Resources/nn-1337b1adec5b.nnue")
+            ]
+        ),
+        .target(
+            name: "ChessKitEngineCore",
+            cxxSettings: [
+                .headerSearchPath("Engines/lc0/"),
+                .headerSearchPath("Engines/lc0/src"),
+                .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
+                .define("NNUE_EMBEDDING_OFF"),
+                .define("NO_PEXT"),
+                .unsafeFlags(["-w"])
+            ],
+            linkerSettings: [
+                .linkedLibrary("z")
+            ]
+        ),
+        .testTarget(
+            name: "ChessKitEngineTests",
+            dependencies: ["ChessKitEngine"]
+        )
+    ],
+    cxxLanguageStandard: .gnucxx17
+)
+
+// MARK: - ChessKitEngineCore excludes
+
+package.targets[1].exclude = [
+    // lc0
     "Engines/lc0/build",
     "Engines/lc0/cross-files",
     "Engines/lc0/dist",
@@ -44,45 +89,3 @@ private let ChessKitEngineCoreExcludes = [
     "Engines/lc0/src/neural/metal/",
     "Engines/lc0/src/neural/network_tf_cc.cc"
 ]
-
-// MARK: - Package Configuration
-
-let package = Package(
-    name: "ChessKitEngine",
-    platforms: [
-        .iOS(.v16), .watchOS(.v9), .macOS(.v13), .tvOS(.v16)
-    ],
-    products: [
-        .library(
-            name: "ChessKitEngine",
-            targets: ["ChessKitEngine"]
-        )
-    ],
-    targets: [
-        .target(
-            name: "ChessKitEngine",
-            dependencies: ["ChessKitEngineCore"],
-            resources: [.copy("Resources/192x15_network")]
-        ),
-        .target(
-            name: "ChessKitEngineCore",
-            exclude: ChessKitEngineCoreExcludes,
-            cxxSettings: [
-                .headerSearchPath("Engines/lc0/"),
-                .headerSearchPath("Engines/lc0/src"),
-                .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
-                .define("NNUE_EMBEDDING_OFF"),
-                .define("NO_PEXT"),
-                .unsafeFlags(["-w"])
-            ],
-            linkerSettings: [
-                .linkedLibrary("z")
-            ]
-        ),
-        .testTarget(
-            name: "ChessKitEngineTests",
-            dependencies: ["ChessKitEngine"]
-        )
-    ],
-    cxxLanguageStandard: .gnucxx17
-)

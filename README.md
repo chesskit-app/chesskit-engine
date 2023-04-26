@@ -95,6 +95,7 @@ engine.loggingEnabled = true
 The following engines are currently supported:
 
 * [Stockfish 15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) ([License](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt)) ([Options Reference](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options))
+* [LeelaChessZero (lc0) 0.29](https://github.com/LeelaChessZero/lc0/tree/v0.29.0) ([License](https://github.com/LeelaChessZero/lc0/blob/v0.29.0/COPYING)) ([Options Reference](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options))
 
 ## Author
 
