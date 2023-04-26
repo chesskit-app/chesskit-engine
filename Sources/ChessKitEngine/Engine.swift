@@ -7,6 +7,9 @@ import ChessKitEngineCore
 
 public class Engine {
     
+    /// The type of the engine.
+    private let type: EngineType
+    
     /// Messenger used to communicate with engine.
     private let messenger: EngineMessenger
     
@@ -27,11 +30,11 @@ public class Engine {
     
     /// Initializes an engine with the provided `type`.
     ///
-    /// - parameter type: The type of engine to use. The
-    /// default is `.stockfish` which corresponds to the latest
-    /// supported Stockfish version.
+    /// - parameter type: The type of engine to use.
     ///
-    public init(type: EngineType = .stockfish) {
+    public init(type: EngineType) {
+        self.type = type
+        
         messenger = EngineMessenger(engineType: type.objc)
         
         messenger.responseHandler = { [weak self] response in
@@ -65,8 +68,10 @@ public class Engine {
         // set UCI mode
         send(command: .uci)
         
-        // configure engine options
-        send(command: .setoption(id: "UCI_AnalyseMode", value: "true"))
+        // configure engine-specific options
+        type.setupCommands.forEach(send)
+        
+        // configure common engine options
         send(command: .setoption(
             id: "Threads",
             value: "\(max((coreCount ?? ProcessInfo.processInfo.processorCount) - 1, 1))"

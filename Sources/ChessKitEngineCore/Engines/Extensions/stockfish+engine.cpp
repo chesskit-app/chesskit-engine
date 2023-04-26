@@ -18,8 +18,6 @@
 using namespace Stockfish;
 
 void StockfishEngine::initialize() {
-    Options["Use NNUE"] = true;
-    
     UCI::init(Options);
     Tune::init();
     PSQT::init();

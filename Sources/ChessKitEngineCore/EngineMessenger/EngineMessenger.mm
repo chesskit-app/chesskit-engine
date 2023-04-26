@@ -4,7 +4,7 @@
 //
 
 #import "EngineMessenger.h"
-#import "../Engines/Extensions/stockfish+engine.h"
+#import "../Engines/AvailableEngines.h"
 
 @implementation EngineMessenger : NSObject
 
@@ -24,6 +24,9 @@ NSFileHandle *_pipeReadHandle;
         switch (type) {
             case EngineTypeStockfish:
                 _engine = new StockfishEngine();
+                break;
+            case EngineTypeLc0:
+                _engine = new Lc0Engine();
                 break;
         }
         

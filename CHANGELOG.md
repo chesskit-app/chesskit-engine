@@ -1,3 +1,15 @@
+# ChessKitEngine 0.2.0
+Released Wednesday, April 26, 2023.
+
+#### New Features
+* Add [`LeelaChessZero (lc0)` engine](https://lczero.org)
+  * Currently comes bundled with a neural network weights file `192x15_network`
+  
+#### Improvements
+* `Engine` initializer no longer has a default `engineType` (previously `.stockfish`)
+  * Type must be specified using `Engine(type: <engine type>)`
+* Add Stockfish `EvalFile` as Swift package resource
+
 # ChessKitEngine 0.1.3
 Released Saturday, April 15, 2023.
 
