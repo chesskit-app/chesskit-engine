@@ -3,6 +3,10 @@
 #### New Features
 * Add [`LeelaChessZero (lc0)` engine](https://lczero.org)
   * Currently comes bundled with a basic neural network
+  
+#### Improvements
+* `Engine` initializer no longer has a default `engineType` (previously `.stockfish`)
+  * Type must be specified using `Engine(type: <engine type>)`
 
 # ChessKitEngine 0.1.3
 Released Saturday, April 15, 2023.

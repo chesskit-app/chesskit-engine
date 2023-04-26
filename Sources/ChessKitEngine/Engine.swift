@@ -30,11 +30,9 @@ public class Engine {
     
     /// Initializes an engine with the provided `type`.
     ///
-    /// - parameter type: The type of engine to use. The
-    /// default is `.stockfish` which corresponds to the latest
-    /// supported Stockfish version.
+    /// - parameter type: The type of engine to use.
     ///
-    public init(type: EngineType = .stockfish) {
+    public init(type: EngineType) {
         self.type = type
         
         messenger = EngineMessenger(engineType: type.objc)
