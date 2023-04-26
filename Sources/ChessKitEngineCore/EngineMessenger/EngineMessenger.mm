@@ -27,6 +27,7 @@ NSFileHandle *_pipeReadHandle;
                 break;
             case EngineTypeLc0:
                 _engine = new Lc0Engine();
+                break;
         }
         
         _engine->initialize();

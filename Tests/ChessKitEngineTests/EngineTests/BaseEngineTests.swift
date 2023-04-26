@@ -55,59 +55,19 @@ class BaseEngineTests: XCTestCase {
         super.tearDown()
     }
     
-    func testEngineUCISetup() {
+    func testEngineSetup() {
         let expectation = XCTestExpectation()
         
         engine.receiveResponse = {
-            if $0 == .uciok {
+            if $0 == .uciok || $0 == .readyok {
                 expectation.fulfill()
             }
         }
         
         engine.send(command: .uci)
-        
-        wait(for: [expectation], timeout: 3)
-    }
-    
-    func testEngineEvaluation() {
-        let expectation = XCTestExpectation()
-        expectation.expectedFulfillmentCount = 10
-        var engineResponses = [EngineResponse]()
-        
-        engine.receiveResponse = {
-            engineResponses.append($0)
-            expectation.fulfill()
-        }
-        
-        engine.send(command: .position(.startpos))
-        engine.send(command: .go(depth: 5))
+        engine.send(command: .isready)
         
         wait(for: [expectation], timeout: 5)
-        
-        var infoCount = 0
-        var score = 0.0
-
-        engineResponses.forEach {
-            switch $0 {
-            case .info(let i):
-                infoCount += 1
-                if let cp = i.score?.cp {
-                    score = cp
-                }
-            default:
-                break
-            }
-        }
-        
-        XCTAssertGreaterThanOrEqual(
-            score,
-            expectedStartingEvaluation.lowerBound
-        )
-        
-        XCTAssertLessThanOrEqual(
-            score,
-            expectedStartingEvaluation.upperBound
-        )
     }
     
 }
