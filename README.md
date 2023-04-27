@@ -2,15 +2,19 @@
 
 [![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/gh/chesskit-app/chesskit-engine)
 
-A Swift package for chess engines.
+A Swift package for the following chess engines:
+
+[<img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="50" />](https://stockfishchess.org) [<img src="https://lczero.org/images/logo.svg" width="50" />](https://lczero.org)
 
 `ChessKitEngine` implements the [Universal Chess Interface protocol](https://backscattering.de/chess/uci/2006-04.txt) for communication between [chess engines](https://en.wikipedia.org/wiki/Chess_engine) and user interfaces built with Swift.
+
+For a related Swift package that manages chess logic, see [chesskit-swift](https://github.com/chesskit-app/chesskit-swift).
 
 ## Usage
 
 * Add a package dependency to your Xcode project or Swift Package:
 ``` swift
-.package(url: "https://github.com/chesskit-app/chesskit-engine", from: "0.1.0")
+.package(url: "https://github.com/chesskit-app/chesskit-engine", from: "0.2.0")
 ```
 
 * Next you can import `ChessKitEngine` to use it in your Swift code:
@@ -93,9 +97,10 @@ engine.loggingEnabled = true
 ## Supported Engines
 
 The following engines are currently supported:
-
-* [Stockfish 15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) ([License](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt)) ([Options Reference](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options))
-* [LeelaChessZero (lc0) 0.29](https://github.com/LeelaChessZero/lc0/tree/v0.29.0) ([License](https://github.com/LeelaChessZero/lc0/blob/v0.29.0/COPYING)) ([Options Reference](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options))
+| | Engine  | Version | License | Options Reference |
+| :---: | --- | :---: | :---: | :---: |
+| <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options)
+| <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.29](https://github.com/LeelaChessZero/lc0/tree/v0.29.0) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.29.0/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
 
 ## Author
 
