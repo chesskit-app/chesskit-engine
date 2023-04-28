@@ -31,8 +31,7 @@ let package = Package(
                 .headerSearchPath("Engines/lc0/src"),
                 .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
                 .define("NNUE_EMBEDDING_OFF"),
-                .define("NO_PEXT"),
-                .unsafeFlags(["-w"])
+                .define("NO_PEXT")
             ],
             linkerSettings: [
                 .linkedLibrary("z")
@@ -48,7 +47,7 @@ let package = Package(
 
 // MARK: - ChessKitEngineCore excludes
 
-package.targets[1].exclude = [
+package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     // lc0
     "Engines/lc0/build",
     "Engines/lc0/cross-files",

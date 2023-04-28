@@ -1,3 +1,9 @@
+# ChessKitEngine 0.2.1
+Released Friday, April 28, 2023.
+
+#### Improvements
+* Removed unsafe flags from `Package.swift`
+
 # ChessKitEngine 0.2.0
 Released Wednesday, April 26, 2023.
 
