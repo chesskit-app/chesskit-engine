@@ -1,3 +1,8 @@
+# ChessKitEngine 0.2.2
+Released Thursday, May 18, 2023.
+
+* Replaced submodule URLs with HTTPS instead of SSH
+
 # ChessKitEngine 0.2.1
 Released Friday, April 28, 2023.
 

@@ -66,7 +66,7 @@ NSFileHandle *_pipeReadHandle;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void) sendCommand: (NSString*) command {
+- (void)sendCommand: (NSString*) command {
     _engine->send_command(std::string([command UTF8String]));
 }
 
