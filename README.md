@@ -62,7 +62,7 @@ engine.send(command: .go(depth: 15))
 let newPosition = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
 
 engine.send(command: .stop)
-engine.send(command: .position(.fen(newPosition))
+engine.send(command: .position(.fen(newPosition)))
 engine.send(command: .go(depth: 15))
 ```
 
@@ -76,6 +76,7 @@ engine.receiveResponse = { response in
         print(info.pv)      // array of move strings representing best line
     default:
         break
+    }
 }
 ```
 
