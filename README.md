@@ -102,6 +102,7 @@ The following engines are currently supported:
 | :---: | --- | :---: | :---: | :---: |
 | <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options)
 | <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.29](https://github.com/LeelaChessZero/lc0/tree/v0.29.0) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.29.0/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
+| <img src="https://www.arasanchess.org/arasan2.gif" width="25" /> | [Arasan](https://www.arasanchess.org) | [24.0.0](https://github.com/jdart1/arasan-chess/tree/v24.0.0) | [MIT License](https://github.com/jdart1/arasan-chess/blob/v24.0.0/LICENSE) | [🔗](https://github.com/jdart1/arasan-chess/tree/v24.0.0#uci-options)
 
 ## Author
 

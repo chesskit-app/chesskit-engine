@@ -4,3 +4,6 @@
 [submodule "Sources/ChessKitEngineCore/Engines/lc0"]
 	path = Sources/ChessKitEngineCore/Engines/lc0
 	url = https://github.com/chesskit-app/lc0.git
+[submodule "Sources/ChessKitEngineCore/Engines/arasan-chess"]
+	path = Sources/ChessKitEngineCore/Engines/arasan-chess
+	url = git@github.com:ameter/arasan-chess.git
