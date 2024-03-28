@@ -95,6 +95,19 @@ engine.loggingEnabled = true
 // verbose while analyzing positions and returning evaluations.
 ```
 
+* Enable engine neural networks
+  * Copy the relevant file in the `Resources` directory of this repo to your app's bundle, then use the engine-specific commands to provide them to the engine (where `fileURL` is a `String` of the URL of the file).
+  * These must be called in the order shown.
+  * For `Stockfish 15.1` (`nn-1337b1adec5b.nnue`):
+    ``` swift
+    engine.send(command: .setoption(id: "EvalFile", value: fileURL))
+    engine.send(command: .setoption(id: "Use NNUE", value: "true"))
+    ```
+  * For `LeelaChessZero 0.29` (`192x15_network`):
+    ``` swift
+    engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
+    ```
+
 ## Supported Engines
 
 The following engines are currently supported:

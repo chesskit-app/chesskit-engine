@@ -1,3 +1,5 @@
+# ChessKitEngine 0.3.0
+Released Wednesday, March 27, 2024.
 
 #### Improvements
 * Add background engine processing for better performance.
