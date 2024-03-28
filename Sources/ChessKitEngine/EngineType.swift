@@ -39,26 +39,12 @@ public enum EngineType: Int {
     var setupCommands: [EngineCommand] {
         switch self {
         case .stockfish:
-            let evalFile = Bundle.module.url(forResource: "nn-1337b1adec5b", withExtension: "nnue")?
-                .absoluteString
-                .replacingOccurrences(of: "file://", with: "")
-            
-            return [
-                evalFile != nil ?
-                    .setoption(id: "EvalFile", value: evalFile!) : nil,
-                .setoption(id: "Use NNUE", value: "true"),
+            [
+                .setoption(id: "Use NNUE", value: "false"),
                 .setoption(id: "UCI_AnalyseMode", value: "true")
-            ].compactMap { $0 }
+            ]
         case .lc0:
-            let weights = Bundle.module.url(forResource: "192x15_network", withExtension: nil)?
-                .absoluteString
-                .replacingOccurrences(of: "file://", with: "")
-            
-            return [
-                .setoption(id: "Backend", value: "eigen"),
-                weights != nil ?
-                    .setoption(id: "WeightsFile", value: weights!) : nil
-            ].compactMap { $0 }
+            []
         }
     }
     

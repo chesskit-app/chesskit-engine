@@ -18,11 +18,7 @@ let package = Package(
     targets: [
         .target(
             name: "ChessKitEngine",
-            dependencies: ["ChessKitEngineCore"],
-            resources: [
-                .copy("Resources/192x15_network"),
-                .copy("Resources/nn-1337b1adec5b.nnue")
-            ]
+            dependencies: ["ChessKitEngineCore"]
         ),
         .target(
             name: "ChessKitEngineCore",

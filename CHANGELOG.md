@@ -1,3 +1,18 @@
+
+#### Improvements
+* Add background engine processing for better performance.
+* Remove neural network resource files for greatly reduced package size.
+  * These can be added manually by bundling the desired files and setting the appropriate engine to use them (see `Resources` directory).
+  * For `Stockfish 15.1` (`nn-1337b1adec5b.nnue`):
+    ``` swift
+    engine.send(command: .setoption(id: "EvalFile", value: evalFileURL))
+    engine.send(command: .setoption(id: "Use NNUE", value: "true"))
+    ```
+  * For `LeelaChessZero 0.29` (`192x15_network`):
+    ``` swift
+    engine.send(command: .setoption(id: "WeightsFile", value: weightsFileURL))
+    ```
+
 # ChessKitEngine 0.2.2
 Released Thursday, May 18, 2023.
 

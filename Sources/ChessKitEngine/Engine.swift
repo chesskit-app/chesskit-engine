@@ -27,7 +27,12 @@ public class Engine {
     ///
     /// Engine must be running for `send(command:)` to work.
     public private(set) var isRunning = false
-    
+
+    private let queue = DispatchQueue(
+        label: "ck-engine-queue",
+        qos: .userInteractive
+    )
+
     /// Initializes an engine with the provided `type`.
     ///
     /// - parameter type: The type of engine to use.
@@ -40,11 +45,13 @@ public class Engine {
         messenger.responseHandler = { [weak self] response in
             guard let self else { return }
             
-            if let parsedResponse = EngineResponse(rawValue: response) {
-                self.log(parsedResponse.rawValue)
-                self.receiveResponse(parsedResponse)
-            } else if !response.isEmpty {
-                self.log(response)
+            DispatchQueue.main.async {
+                if let parsedResponse = EngineResponse(rawValue: response) {
+                    self.log(parsedResponse.rawValue)
+                    self.receiveResponse(parsedResponse)
+                } else if !response.isEmpty {
+                    self.log(response)
+                }
             }
         }
     }
@@ -110,9 +117,11 @@ public class Engine {
             log("Engine is not running, call start() first.")
             return
         }
-        
-        log(command.rawValue)
-        messenger.sendCommand(command.rawValue)
+
+        queue.async {
+            self.log(command.rawValue)
+            self.messenger.sendCommand(command.rawValue)
+        }
     }
     
     /// Closure that is called when engine responses are received.
