@@ -40,7 +40,7 @@ class BaseEngineTests: XCTestCase {
     /// the standard starting position.
     var expectedStartingEvaluation: ClosedRange<Double> = 1...60
     
-    private var engine: Engine!
+    var engine: Engine!
     
     override func setUp() {
         super.setUp()

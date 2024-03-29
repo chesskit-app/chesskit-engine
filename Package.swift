@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -7,7 +7,10 @@ import PackageDescription
 let package = Package(
     name: "ChessKitEngine",
     platforms: [
-        .iOS(.v16), .watchOS(.v9), .macOS(.v13), .tvOS(.v16)
+        .iOS(.v16),
+        .watchOS(.v9),
+        .macOS(.v13),
+        .tvOS(.v16)
     ],
     products: [
         .library(
@@ -35,7 +38,10 @@ let package = Package(
         ),
         .testTarget(
             name: "ChessKitEngineTests",
-            dependencies: ["ChessKitEngine"]
+            dependencies: ["ChessKitEngine"],
+            resources: [
+                .copy("EngineTests/Resources/192x15_network")
+            ]
         )
     ],
     cxxLanguageStandard: .gnucxx17
