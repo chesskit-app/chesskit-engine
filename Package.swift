@@ -40,7 +40,8 @@ let package = Package(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"],
             resources: [
-                .copy("EngineTests/Resources/192x15_network")
+                .copy("EngineTests/Resources/192x15_network"),
+                .copy("EngineTests/Resources/nn-1337b1adec5b.nnue")
             ]
         )
     ],
