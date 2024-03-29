@@ -118,7 +118,7 @@ public class Engine {
             return
         }
 
-        queue.async {
+        queue.sync {
             self.log(command.rawValue)
             self.messenger.sendCommand(command.rawValue)
         }
