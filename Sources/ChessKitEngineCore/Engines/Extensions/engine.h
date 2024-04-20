@@ -29,6 +29,7 @@ public:
     virtual void deinitialize() {};
     
     /// Sends a command to the engine.
+    /// 
     /// - parameter cmd: The UCI command to send to the engine.
     /// See https://backscattering.de/chess/uci/2006-04.txt
     /// for valid commands.
