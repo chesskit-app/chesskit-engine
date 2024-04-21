@@ -95,18 +95,31 @@ engine.loggingEnabled = true
 // verbose while analyzing positions and returning evaluations.
 ```
 
-* Enable engine neural networks
-  * Copy the relevant file in the `Resources` directory of this repo to your app's bundle, then use the engine-specific commands to provide them to the engine (where `fileURL` is a `String` of the URL of the file).
-  * These must be called in the order shown.
-  * For `Stockfish 15.1` (`nn-1337b1adec5b.nnue`):
-    ``` swift
-    engine.send(command: .setoption(id: "EvalFile", value: fileURL))
-    engine.send(command: .setoption(id: "Use NNUE", value: "true"))
-    ```
-  * For `LeelaChessZero 0.29` (`192x15_network`):
-    ``` swift
-    engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
-    ```
+## Provide Neural Networks
+Both `Stockfish 16.1` and `LeelaChessZero 0.30` require neural network files to be provided to the engine for computation.
+
+They can be provided to the engine using the `.setoption(id:value:)` UCI commands provided by `ChessKitEngine`.
+
+For example:
+``` swift
+// Stockfish
+engine.send(command: .setoption(id: "EvalFile", value: fileURL))
+engine.send(command: .setoption(id: "EvalFileSmall", value: smallFileURL))
+
+// Lc0
+engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
+```
+
+The following details the recommended files for each engine and where to obtain them.
+
+#### Stockfish
+* `"EvalFile"`: `nn-b1a57edbea57.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=b1a57edbea57&user=))
+* `"EvalFileSmall"`: `nn-baff1ede1f90.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=baff1ede1f90&user=))
+* Other files from https://tests.stockfishchess.org can be used if desired.
+
+#### LeelaChessZero
+* `"WeightsFile"`: `192x15_network` ([download here](https://github.com/chesskit-app/chesskit-engine/tree/0f11891b3c053e12d04c2e9c9d294c4404b006c3/Tests/ChessKitEngineTests/EngineTests/Resources))
+* Other files can be obtained [here](https://lczero.org/play/bestnets/) or [here](http://training.lczero.org/networks/).
 
 ## Supported Engines
 
