@@ -54,7 +54,7 @@ public class Engine {
     /// - parameter multipv: The number of lines the engine should return,
     /// sent via the `"MultiPV"` UCI option.
     /// - parameter completion: The completion handler that is called when
-    /// the engine set up is complete. You must wait for this to be called
+    /// the engine setup is complete. You must wait for this to be called
     /// before sending further commands to the engine.
     ///
     /// This must be called before sending any commands
@@ -63,53 +63,43 @@ public class Engine {
         messenger.responseHandler = { [weak self] response in
             guard let self else { return }
 
-            Task { @MainActor in
-                if let parsedResponse = EngineResponse(rawValue: response) {
-                    self.log(parsedResponse.rawValue)
-
-                    if parsedResponse == .uciok && !self.isRunning {
-                        self.send(command: .isready)
-                        return
+            DispatchQueue.main.async {
+                guard let parsed = EngineResponse(rawValue: response) else {
+                    if !response.isEmpty {
+                        self.log(response)
                     }
+                    return
+                }
 
-                    if parsedResponse == .readyok && !self.isRunning {
+                self.log(parsed.rawValue)
+
+                guard self.isRunning else {
+                    // engine setup loop
+                    // <uci> → <uciok> → <isready> → <readok> → complete
+                    switch parsed {
+                    case .uciok:
+                        self.send(command: .isready)
+                    case .readyok:
                         self.isRunning = true
                         self.performInitialSetup(
                             coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
                             multipv: multipv
                         )
                         completion()
-                        return
+                    default:
+                        break
                     }
-
-                    self.receiveResponse(parsedResponse)
-                } else if !response.isEmpty {
-                    self.log(response)
+                    return
                 }
+
+                self.receiveResponse(parsed)
             }
         }
 
         messenger.start()
 
-        // set UCI mode
+        // start engine setup loop
         send(command: .uci)
-    }
-
-    private var initialSetupComplete = false
-
-    private func performInitialSetup(coreCount: Int, multipv: Int) {
-        guard !initialSetupComplete else { return }
-
-        // configure engine-specific options
-        type.setupCommands.forEach(send)
-
-        // configure common engine options
-        send(command: .setoption(
-            id: "Threads",
-            value: "\(max(coreCount - 1, 1))"
-        ))
-        send(command: .setoption(id: "MultiPV", value: "\(multipv)"))
-        initialSetupComplete = true
     }
 
     /// Stops the engine.
@@ -142,8 +132,8 @@ public class Engine {
         }
 
         queue.sync {
-            self.log(command.rawValue)
-            self.messenger.sendCommand(command.rawValue)
+            log(command.rawValue)
+            messenger.sendCommand(command.rawValue)
         }
     }
 
@@ -157,16 +147,32 @@ public class Engine {
         _ in
     }
 
-}
+    // MARK: - Private
 
-// MARK: - Private
-
-extension Engine {
-
+    /// Logs `message` if `loggingEnabled` is `true`.
     private func log(_ message: String) {
         if loggingEnabled {
             Logging.print(message)
         }
+    }
+
+    private var initialSetupComplete = false
+
+    /// Sets initial engine options.
+    private func performInitialSetup(coreCount: Int, multipv: Int) {
+        guard !initialSetupComplete else { return }
+
+        // configure engine-specific options
+        type.setupCommands.forEach(send)
+
+        // configure common engine options
+        send(command: .setoption(
+            id: "Threads",
+            value: "\(max(coreCount - 1, 1))"
+        ))
+        send(command: .setoption(id: "MultiPV", value: "\(multipv)"))
+
+        initialSetupComplete = true
     }
 
 }

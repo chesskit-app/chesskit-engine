@@ -42,7 +42,7 @@ public enum EngineType: Int {
             let options = [
                 "EvalFile": "nn-b1a57edbea57",
                 "EvalFileSmall": "nn-baff1ede1f90"
-            ].mapValues {
+            ].compactMapValues {
                 Bundle.main.url(forResource: $0, withExtension: "nnue")?.path()
             }
 

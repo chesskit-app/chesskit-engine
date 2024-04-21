@@ -43,8 +43,6 @@ NSFileHandle *_pipeWriteHandle;
 }
 
 - (void)start {
-
-
     // set up read pipe
     _readPipe = [NSPipe pipe];
     _pipeReadHandle = [_readPipe fileHandleForReading];
@@ -66,7 +64,7 @@ NSFileHandle *_pipeWriteHandle;
     dup2([[_writePipe fileHandleForReading] fileDescriptor], fileno(stdin));
 
     // create command dispatch queue and start engine
-    _queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    _queue = dispatch_queue_create("ck-message-queue", DISPATCH_QUEUE_CONCURRENT);
 
     dispatch_async(_queue, ^{
         _engine->initialize();
@@ -88,8 +86,8 @@ NSFileHandle *_pipeWriteHandle;
 
 - (void)sendCommand: (NSString*) command {
     dispatch_sync(_queue, ^{
-        const char *cCommand = [[command stringByAppendingString:@"\n"] UTF8String];
-        write([_pipeWriteHandle fileDescriptor], cCommand, strlen(cCommand));
+        const char *cmd = [[command stringByAppendingString:@"\n"] UTF8String];
+        write([_pipeWriteHandle fileDescriptor], cmd, strlen(cmd));
     });
 }
 
