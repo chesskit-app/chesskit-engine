@@ -12,4 +12,4 @@ jobs:
     uses: chesskit-app/workflows/.github/workflows/check-swift-package.yaml@master
     secrets: inherit
     with:
-       test_bundle: ChessKitEnginePackageTests
+      test_bundle: ChessKitEnginePackageTests
