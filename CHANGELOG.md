@@ -1,11 +1,18 @@
 # [unreleased]
 
-#### Improvements
+#### Engine Upgrades
 * Update to [*Stockfish 16.1*](https://stockfishchess.org/blog/2024/stockfish-16-1/).
   * ⚠️ Stockfish now requires `EvalFile` and `EvalFileSmall` options to be set after launch, with a path to the `*.nnue` files provided.
   * Currently `chesskit-engine` assumes [`nn-baff1ede1f90.nnue`](https://tests.stockfishchess.org/nns?network_name=baff1ede1f90&user=), [`nn-b1a57edbea57.nnue`](https://tests.stockfishchess.org/nns?network_name=b1a57edbea57&user=) are available in your app's `Bundle.main`.
   * Click the file names in the previous line to access the download pages.
   * Any other files can be added via `.setoption(id:value:)` engine commands.
+* Update to [*LeelaChessZero 0.30*](https://github.com/LeelaChessZero/lc0/releases/tag/v0.30.0).
+  * ⚠️ Lc0 requires `WeightsFile` options to be set after launch, with a path to a neural network file provided.
+  * Currently `chesskit-engine` assumes `192x15_network` is available in your app's `Bundle.main`.
+  * Network files can be downloaded from [lczero.org](https://lczero.org/play/bestnets/).
+  * Any other files can be added via `.setoption(id:value:)` engine commands.
+
+#### Improvements
 * `Engine.start()` now takes a `completion` handler.
   * This is called once the engine has finished initializing.
   * Engine commands (i.e. setting options or requesting evaluations) should not be sent until this completion handler is called.

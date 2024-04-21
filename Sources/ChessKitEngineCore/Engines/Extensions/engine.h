@@ -27,15 +27,6 @@ public:
     /// Any required deinitialization and cleanup should
     /// be performed here
     virtual void deinitialize() {};
-    
-    /// Sends a command to the engine.
-    /// 
-    /// - parameter cmd: The UCI command to send to the engine.
-    /// See https://backscattering.de/chess/uci/2006-04.txt
-    /// for valid commands.
-    ///
-    /// The output from the engine will appear in `stdout`.
-    virtual void send_command(const std::string &cmd) {};
 };
 
 #endif /* engine_h */

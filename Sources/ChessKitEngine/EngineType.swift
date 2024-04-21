@@ -31,7 +31,7 @@ public enum EngineType: Int {
     public var version: String {
         switch self {
         case .stockfish:    return "16.1"
-        case .lc0:          return "0.29"
+        case .lc0:          return "0.30"
         }
     }
 
@@ -39,16 +39,22 @@ public enum EngineType: Int {
     var setupCommands: [EngineCommand] {
         switch self {
         case .stockfish:
-            let options = [
+            let fileOptions = [
                 "EvalFile": "nn-b1a57edbea57",
                 "EvalFileSmall": "nn-baff1ede1f90"
             ].compactMapValues {
                 Bundle.main.url(forResource: $0, withExtension: "nnue")?.path()
             }
 
-            return options.map(EngineCommand.setoption)
+            return fileOptions.map(EngineCommand.setoption)
         case .lc0:
-            return []
+            let fileOptions = [
+                "WeightsFile": "192x15_network"
+            ].compactMapValues {
+                Bundle.main.url(forResource: $0, withExtension: nil)?.path()
+            }
+
+            return fileOptions.map(EngineCommand.setoption)
         }
     }
 

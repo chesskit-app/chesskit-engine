@@ -18,7 +18,3 @@ void StockfishEngine::initialize() {
 void StockfishEngine::deinitialize() {
     ThreadPool().end();
 }
-
-void StockfishEngine::send_command(const std::string &cmd) {
-//    UCI::execute_command(cmd);
-}

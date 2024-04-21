@@ -14,7 +14,6 @@ class Lc0Engine: public Engine {
 public:
     void initialize();
     void deinitialize();
-    void send_command(const std::string &cmd);
 };
 
 #endif /* lc0_engine_h */

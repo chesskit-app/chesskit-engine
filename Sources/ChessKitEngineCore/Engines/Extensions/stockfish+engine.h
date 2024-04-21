@@ -14,7 +14,6 @@ class StockfishEngine: public Engine {
 public:
     void initialize();
     void deinitialize();
-    void send_command(const std::string &cmd);
 };
 
 #endif /* stockfish_engine_h */
