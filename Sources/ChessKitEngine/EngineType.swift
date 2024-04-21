@@ -39,21 +39,14 @@ public enum EngineType: Int {
     var setupCommands: [EngineCommand] {
         switch self {
         case .stockfish:
-            let evalFiles = ["nn-baff1ede1f90", "nn-b1a57edbea57"]
-                .map {
-                    Bundle.main.url(forResource: $0, withExtension: "nnue")?
-                        .absoluteString
-                        .replacingOccurrences(of: "file://", with: "")
-                }
-
-            if let smallFileURL = evalFiles[0], let bigFileURL = evalFiles[1] {
-                return [
-                    .setoption(id: "EvalFile", value: bigFileURL),
-                    .setoption(id: "EvalFileSmall", value: smallFileURL)
-                ]
-            } else {
-                return []
+            let options = [
+                "EvalFile": "nn-b1a57edbea57",
+                "EvalFileSmall": "nn-baff1ede1f90"
+            ].mapValues {
+                Bundle.main.url(forResource: $0, withExtension: "nnue")?.path()
             }
+
+            return options.map(EngineCommand.setoption)
         case .lc0:
             return []
         }
