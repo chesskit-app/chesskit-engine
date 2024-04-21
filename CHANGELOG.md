@@ -1,3 +1,15 @@
+# [unreleased]
+
+#### Improvements
+* Update to [*Stockfish 16.1*](https://stockfishchess.org/blog/2024/stockfish-16-1/).
+  * ⚠️ Stockfish now requires `EvalFile` and `EvalFileSmall` options to be set after launch, with a path to the `*.nnue` files provided.
+  * Currently `chesskit-engine` assumes [`nn-baff1ede1f90.nnue`](https://tests.stockfishchess.org/nns?network_name=baff1ede1f90&user=), [`nn-b1a57edbea57.nnue`](https://tests.stockfishchess.org/nns?network_name=b1a57edbea57&user=) are available in your app's `Bundle.main`.
+  * Click the file names in the previous line to access the download pages.
+  * Any other files can be added via `.setoption(id:value:)` engine commands.
+* `Engine.start()` now takes a `completion` handler.
+  * This is called once the engine has finished initializing.
+  * Engine commands (i.e. setting options or requesting evaluations) should not be sent until this completion handler is called.
+
 # ChessKitEngine 0.3.0
 Released Wednesday, March 27, 2024.
 
@@ -32,7 +44,7 @@ Released Wednesday, April 26, 2023.
 #### New Features
 * Add [`LeelaChessZero (lc0)` engine](https://lczero.org)
   * Currently comes bundled with a neural network weights file `192x15_network`
-  
+
 #### Improvements
 * `Engine` initializer no longer has a default `engineType` (previously `.stockfish`)
   * Type must be specified using `Engine(type: <engine type>)`
@@ -63,7 +75,7 @@ Released Friday, April 14, 2023.
 Released Friday, April 14, 2023.
 
 * Fix build issue related to missing `ChessKitEngine_Cxx` target
-        
+
 # ChessKitEngine 0.1.0
 Released Friday, April 14, 2023.
 

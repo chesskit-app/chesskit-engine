@@ -46,7 +46,6 @@ class BaseEngineTests: XCTestCase {
         super.setUp()
         
         engine = Engine(type: engineType)
-        engine.start()
     }
     
     override func tearDown() {
@@ -57,15 +56,16 @@ class BaseEngineTests: XCTestCase {
     
     func testEngineSetup() {
         let expectation = XCTestExpectation()
-        
+
+        engine.start { [self] in
+            engine.send(command: .isready)
+        }
+
         engine.receiveResponse = {
-            if $0 == .uciok || $0 == .readyok {
+            if $0 == .readyok {
                 expectation.fulfill()
             }
         }
-        
-        engine.send(command: .uci)
-        engine.send(command: .isready)
         
         wait(for: [expectation], timeout: 5)
     }

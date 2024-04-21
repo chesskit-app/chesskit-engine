@@ -10,8 +10,8 @@
 
 dispatch_queue_t _queue;
 Engine *_engine;
-NSPipe *_pipe1;
-NSPipe *_pipe2;
+NSPipe *_readPipe;
+NSPipe *_writePipe;
 NSFileHandle *_pipeReadHandle;
 NSFileHandle *_pipeWriteHandle;
 
@@ -43,11 +43,13 @@ NSFileHandle *_pipeWriteHandle;
 }
 
 - (void)start {
-    _queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    _pipe1 = [NSPipe pipe];
-    _pipeReadHandle = [_pipe1 fileHandleForReading];
 
-    dup2([[_pipe1 fileHandleForWriting] fileDescriptor], fileno(stdout));
+
+    // set up read pipe
+    _readPipe = [NSPipe pipe];
+    _pipeReadHandle = [_readPipe fileHandleForReading];
+
+    dup2([[_readPipe fileHandleForWriting] fileDescriptor], fileno(stdout));
 
     [[NSNotificationCenter defaultCenter]
      addObserver:self
@@ -58,9 +60,13 @@ NSFileHandle *_pipeWriteHandle;
 
     [_pipeReadHandle readInBackgroundAndNotify];
 
-    _pipe2 = [NSPipe pipe];
-    _pipeWriteHandle = [_pipe2 fileHandleForWriting];
-    dup2([[_pipe2 fileHandleForReading] fileDescriptor], fileno(stdin));
+    // set up write pipe
+    _writePipe = [NSPipe pipe];
+    _pipeWriteHandle = [_writePipe fileHandleForWriting];
+    dup2([[_writePipe fileHandleForReading] fileDescriptor], fileno(stdin));
+
+    // create command dispatch queue and start engine
+    _queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 
     dispatch_async(_queue, ^{
         _engine->initialize();
@@ -71,18 +77,20 @@ NSFileHandle *_pipeWriteHandle;
     [_pipeReadHandle closeFile];
     [_pipeWriteHandle closeFile];
 
-    _pipe1 = NULL;
+    _readPipe = NULL;
     _pipeReadHandle = NULL;
 
-    _pipe2 = NULL;
+    _writePipe = NULL;
     _pipeWriteHandle = NULL;
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)sendCommand: (NSString*) command {
-    const char *cCommand = [[command stringByAppendingString:@"\n"] UTF8String];
-    write([_pipeWriteHandle fileDescriptor], cCommand, strlen(cCommand));
+    dispatch_sync(_queue, ^{
+        const char *cCommand = [[command stringByAppendingString:@"\n"] UTF8String];
+        write([_pipeWriteHandle fileDescriptor], cCommand, strlen(cCommand));
+    });
 }
 
 # pragma mark Private
