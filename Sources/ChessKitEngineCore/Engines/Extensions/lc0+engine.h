@@ -6,8 +6,8 @@
 #ifndef lc0_engine_h
 #define lc0_engine_h
 
-#import "engine.h"
-#import <string>
+#include "engine.h"
+#include <string>
 
 /// LeelaChessZero (Lc0) implementation of `Engine`.
 class Lc0Engine: public Engine {

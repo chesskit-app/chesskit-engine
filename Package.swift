@@ -30,7 +30,12 @@ let package = Package(
                 .headerSearchPath("Engines/lc0/src"),
                 .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
                 .define("NNUE_EMBEDDING_OFF"),
-                .define("NO_PEXT")
+                .define("NO_PEXT"),
+                .unsafeFlags([
+                    // suppress Stockfish warnings
+                    "-Wno-deprecated-declarations",
+                    "-Wno-shorten-64-to-32"
+                ])
             ],
             linkerSettings: [
                 .linkedLibrary("z")
@@ -40,8 +45,7 @@ let package = Package(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"],
             resources: [
-                .copy("EngineTests/Resources/192x15_network"),
-                .copy("EngineTests/Resources/nn-1337b1adec5b.nnue")
+                .copy("EngineTests/Resources/192x15_network")
             ]
         )
     ],

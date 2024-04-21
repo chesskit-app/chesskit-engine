@@ -3,14 +3,16 @@
 //  ChessKitEngine
 //
 
-#import "stockfish+engine.h"
-#import "../Stockfish/src/_main.h"
-#import "../Stockfish/src/thread.h"
+#include "stockfish+engine.h"
+#include "../Stockfish/src/_main.h"
+#include "../Stockfish/src/thread.h"
 
 using namespace Stockfish;
 
 void StockfishEngine::initialize() {
-    _main(1, (char* []){""});
+    char empty[] = "";
+    char* argv[] = { empty };
+    _main(1, argv);
 }
 
 void StockfishEngine::deinitialize() {

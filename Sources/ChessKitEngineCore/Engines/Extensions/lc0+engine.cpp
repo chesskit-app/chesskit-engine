@@ -3,10 +3,10 @@
 //  ChessKitEngine
 //
 
-#import "lc0+engine.h"
+#include "lc0+engine.h"
 
-#import "../lc0/src/chess/board.h"
-#import "../lc0/src/engine.h"
+#include "../lc0/src/chess/board.h"
+#include "../lc0/src/engine.h"
 
 using namespace lczero;
 

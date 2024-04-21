@@ -6,8 +6,8 @@
 #ifndef stockfish_engine_h
 #define stockfish_engine_h
 
-#import "engine.h"
-#import <string>
+#include "engine.h"
+#include <string>
 
 /// Stockfish implementation of `Engine`.
 class StockfishEngine: public Engine {
