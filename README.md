@@ -1,6 +1,6 @@
 # ♟️🤖 ChessKitEngine
 
-[![ChessKitEngine Tests](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/test-chesskit-engine.yml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/gh/chesskit-app/chesskit-engine)
+[![checks](https://github.com/chesskit-app/chesskit-engine/actions/workflows/checks.yaml/badge.svg)](https://github.com/chesskit-app/chesskit-engine/actions/workflows/checks.yaml) [![codecov](https://codecov.io/github/chesskit-app/chesskit-engine/branch/master/graph/badge.svg?token=TDS6QOD25U)](https://codecov.io/gh/chesskit-app/chesskit-engine)
 
 A Swift package for the following chess engines:
 
@@ -113,7 +113,7 @@ engine.loggingEnabled = true
 The following engines are currently supported:
 | | Engine  | Version | License | Options Reference |
 | :---: | --- | :---: | :---: | :---: |
-| <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [15.1](https://github.com/official-stockfish/Stockfish/tree/sf_15.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_15.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/tree/sf_15.1#the-uci-protocol-and-available-options)
+| <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [16.1](https://github.com/official-stockfish/Stockfish/tree/sf_16.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_16.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/tree/sf_16.1#the-uci-protocol-and-available-options)
 | <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.29](https://github.com/LeelaChessZero/lc0/tree/v0.29.0) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.29.0/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
 
 ## Author
