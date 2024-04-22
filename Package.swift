@@ -30,12 +30,7 @@ let package = Package(
                 .headerSearchPath("Engines/lc0/src"),
                 .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
                 .define("NNUE_EMBEDDING_OFF"),
-                .define("NO_PEXT"),
-                .unsafeFlags([
-                    // suppress Stockfish warnings
-                    "-Wno-deprecated-declarations",
-                    "-Wno-shorten-64-to-32"
-                ])
+                .define("NO_PEXT")
             ],
             linkerSettings: [
                 .linkedLibrary("z")
