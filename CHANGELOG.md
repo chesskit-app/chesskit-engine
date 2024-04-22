@@ -11,11 +11,15 @@
   * Currently `chesskit-engine` assumes `192x15_network` is available in your app's `Bundle.main`.
   * Network files can be downloaded from [lczero.org](https://lczero.org/play/bestnets/).
   * Any other files can be added via `.setoption(id:value:)` engine commands.
+  * Currently there are some performance issues using `lc0` in an app; this is being investigated but any contributions (via PRs or issues) are appreciated.
 
 #### Improvements
 * `Engine.start()` now takes a `completion` handler.
   * This is called once the engine has finished initializing.
   * Engine commands (i.e. setting options or requesting evaluations) should not be sent until this completion handler is called.
+* `EngineMessenger` now sends commands to the engines via `stdin`, see [Issue #11](https://github.com/chesskit-app/chesskit-engine/issues/11).
+  * This will allow for much simpler upgrades to existing engines, as well as the inclusion of new engines in the future.
+  * Special thanks [@dehlen](https://github.com/dehlen).
 
 # ChessKitEngine 0.3.0
 Released Wednesday, March 27, 2024.
