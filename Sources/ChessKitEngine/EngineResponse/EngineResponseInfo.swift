@@ -6,7 +6,7 @@
 // MARK: - Info
 
 public extension EngineResponse {
-    
+
     struct Info  {
         public var depth: Int?
         public var seldepth: Int?
@@ -25,7 +25,7 @@ public extension EngineResponse {
         public var string: String?
         public var refutation: [String]?
         public var currline: CurrLine?
-        
+
         /// Possible arguments for the `<info>` command.
         enum Argument: String, CaseIterable {
             case depth
@@ -45,7 +45,7 @@ public extension EngineResponse {
             case string
             case refutation
             case currline
-            
+
             enum ArgType {
                 /// Single token follows the argument.
                 case single
@@ -59,7 +59,7 @@ public extension EngineResponse {
                 /// The argument is of type `(Int, [String])`
                 case currentLine
             }
-            
+
             var type: ArgType {
                 switch self {
                 case .depth:            return .single
@@ -82,18 +82,13 @@ public extension EngineResponse {
                 }
             }
         }
-        
-        subscript(arg: Argument) -> Any? {
-            get { self[arg.rawValue] }
-            set { self[arg.rawValue] = newValue }
-        }
-        
+
         /// Allows subscript access to `Info` properties
         /// to allow for easier `String` parsing.
         subscript(arg: String) -> Any? {
             get {
                 guard let arg = Argument(rawValue: arg) else { return nil }
-                
+
                 switch arg {
                 case .depth:           return depth
                 case .seldepth:        return seldepth
@@ -116,7 +111,7 @@ public extension EngineResponse {
             }
             set {
                 guard let arg = Argument(rawValue: arg) else { return }
-                
+
                 switch arg {
                 case .depth:           depth = newValue as? Int
                 case .seldepth:        seldepth = newValue as? Int
@@ -139,7 +134,7 @@ public extension EngineResponse {
             }
         }
     }
-    
+
 }
 
 extension EngineResponse.Info: Equatable {}
@@ -147,75 +142,75 @@ extension EngineResponse.Info: Equatable {}
 extension EngineResponse.Info: CustomStringConvertible {
     public var description: String {
         var result = ""
-        
+
         if let depth = depth {
             result += " <depth> \(depth)"
         }
-        
+
         if let seldepth = seldepth {
             result += " <seldepth> \(seldepth)"
         }
-        
+
         if let time = time {
             result += " <time> \(time)"
         }
-        
+
         if let nodes = nodes {
             result += " <nodes> \(nodes)"
         }
-        
+
         if let pv = pv, !pv.isEmpty {
             result += " <pv> \(pv.joined(separator: " "))"
         }
-        
+
         if let multipv = multipv {
             result += " <multipv> \(multipv)"
         }
-        
+
         if let score = score {
             result += " <score>\(score)"
         }
-        
+
         if let currmove = currmove {
             result += " <currmove> \(currmove)"
         }
-        
+
         if let currmovenumber = currmovenumber {
             result += " <currmovenumber> \(currmovenumber)"
         }
-        
+
         if let hashfull = hashfull {
             result += " <hashfull> \(hashfull)"
         }
-        
+
         if let nps = nps {
             result += " <nps> \(nps)"
         }
-        
+
         if let tbhits = tbhits {
             result += " <tbhits> \(tbhits)"
         }
-        
+
         if let sbhits = sbhits {
             result += " <sbhits> \(sbhits)"
         }
-        
+
         if let cpuload = cpuload {
             result += " <cpuload> \(cpuload)"
         }
-        
+
         if let string = string {
             result += " <string> \(string)"
         }
-        
+
         if let refutation = refutation {
             result += " <refutation> \(refutation.joined(separator: " "))"
         }
-        
+
         if let currline = currline {
             result += " <currline>\(currline)"
         }
-        
+
         return result
     }
 }
@@ -234,7 +229,7 @@ public extension EngineResponse.Info {
         public var lowerbound: Bool?
         /// The score is just an upper bound.
         public var upperbound: Bool?
-        
+
         /// Allows subscript access to `Score` properties
         /// to allow for easier `String` parsing.
         subscript(member: String) -> Any? {
@@ -258,29 +253,29 @@ public extension EngineResponse.Info {
             }
         }
     }
-    
+
 }
 
 extension EngineResponse.Info.Score: CustomStringConvertible {
     public var description: String {
         var result = ""
-        
+
         if let cp = cp {
             result += " <cp> \(cp)"
         }
-        
+
         if let mate = mate {
             result += " <mate> \(mate)"
         }
-        
+
         if let lowerbound = lowerbound, lowerbound {
             result += " <lowerbound>"
         }
-        
+
         if let upperbound = upperbound, upperbound {
             result += " <upperbound>"
         }
-        
+
         return result
     }
 }
@@ -299,15 +294,15 @@ extension EngineResponse.Info {
 extension EngineResponse.Info.CurrLine: CustomStringConvertible {
     public var description: String {
         var result = ""
-        
+
         if let cpunr = cpunr {
             result += " \(cpunr)"
         }
-        
+
         if !moves.isEmpty {
             result += " \(moves.joined(separator: " "))"
         }
-        
+
         return result
     }
 }

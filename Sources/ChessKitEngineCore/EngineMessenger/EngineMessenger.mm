@@ -8,9 +8,12 @@
 
 @implementation EngineMessenger : NSObject
 
+dispatch_queue_t _queue;
 Engine *_engine;
-NSPipe *_pipe;
+NSPipe *_readPipe;
+NSPipe *_writePipe;
 NSFileHandle *_pipeReadHandle;
+NSFileHandle *_pipeWriteHandle;
 
 /// Initializes a new `EngineMessenger` with default engine `Stockfish`.
 - (id)init {
@@ -19,7 +22,7 @@ NSFileHandle *_pipeReadHandle;
 
 - (id)initWithEngineType: (EngineType_objc) type {
     self = [super init];
-    
+
     if (self) {
         switch (type) {
             case EngineTypeStockfish:
@@ -29,10 +32,8 @@ NSFileHandle *_pipeReadHandle;
                 _engine = new Lc0Engine();
                 break;
         }
-        
-        _engine->initialize();
     }
-    
+
     return self;
 }
 
@@ -42,42 +43,62 @@ NSFileHandle *_pipeReadHandle;
 }
 
 - (void)start {
-    _pipe = [NSPipe pipe];
-    _pipeReadHandle = [_pipe fileHandleForReading];
-    
-    dup2([[_pipe fileHandleForWriting] fileDescriptor], fileno(stdout));
-    
+    // set up read pipe
+    _readPipe = [NSPipe pipe];
+    _pipeReadHandle = [_readPipe fileHandleForReading];
+
+    dup2([[_readPipe fileHandleForWriting] fileDescriptor], fileno(stdout));
+
     [[NSNotificationCenter defaultCenter]
      addObserver:self
      selector:@selector(readStdout:)
      name:NSFileHandleReadCompletionNotification
      object:_pipeReadHandle
     ];
-    
+
     [_pipeReadHandle readInBackgroundAndNotify];
+
+    // set up write pipe
+    _writePipe = [NSPipe pipe];
+    _pipeWriteHandle = [_writePipe fileHandleForWriting];
+    dup2([[_writePipe fileHandleForReading] fileDescriptor], fileno(stdin));
+
+    // create command dispatch queue and start engine
+    _queue = dispatch_queue_create("ck-message-queue", DISPATCH_QUEUE_CONCURRENT);
+
+    dispatch_async(_queue, ^{
+        _engine->initialize();
+    });
 }
 
 - (void)stop {
     [_pipeReadHandle closeFile];
-    
-    _pipe = NULL;
+    [_pipeWriteHandle closeFile];
+
+    _readPipe = NULL;
     _pipeReadHandle = NULL;
-    
+
+    _writePipe = NULL;
+    _pipeWriteHandle = NULL;
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)sendCommand: (NSString*) command {
-    _engine->send_command(std::string([command UTF8String]));
+    dispatch_sync(_queue, ^{
+        const char *cmd = [[command stringByAppendingString:@"\n"] UTF8String];
+        write([_pipeWriteHandle fileDescriptor], cmd, strlen(cmd));
+    });
 }
 
 # pragma mark Private
 
 - (void)readStdout: (NSNotification*) notification {
     [_pipeReadHandle readInBackgroundAndNotify];
-    
+
     NSData *data = [[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
     NSArray<NSString *> *output = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
-    
+
     [output enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [self responseHandler](obj);
     }];

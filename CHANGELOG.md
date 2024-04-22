@@ -1,3 +1,26 @@
+# [unreleased]
+
+#### Engine Upgrades
+* Update to [*Stockfish 16.1*](https://stockfishchess.org/blog/2024/stockfish-16-1/).
+  * ⚠️ Stockfish now requires `EvalFile` and `EvalFileSmall` options to be set after launch, with a path to the `*.nnue` files provided.
+  * Currently `chesskit-engine` assumes [`nn-baff1ede1f90.nnue`](https://tests.stockfishchess.org/nns?network_name=baff1ede1f90&user=), [`nn-b1a57edbea57.nnue`](https://tests.stockfishchess.org/nns?network_name=b1a57edbea57&user=) are available in your app's `Bundle.main`.
+  * Click the file names in the previous line to access the download pages.
+  * Any other files can be added via `.setoption(id:value:)` engine commands.
+* Update to [*LeelaChessZero 0.30*](https://github.com/LeelaChessZero/lc0/releases/tag/v0.30.0).
+  * ⚠️ Lc0 requires `WeightsFile` options to be set after launch, with a path to a neural network file provided.
+  * Currently `chesskit-engine` assumes `192x15_network` is available in your app's `Bundle.main`.
+  * Network files can be downloaded from [lczero.org](https://lczero.org/play/bestnets/).
+  * Any other files can be added via `.setoption(id:value:)` engine commands.
+  * Currently there are some performance issues using `lc0` in an app; this is being investigated but any contributions (via PRs or issues) are appreciated.
+
+#### Improvements
+* `Engine.start()` now takes a `completion` handler.
+  * This is called once the engine has finished initializing.
+  * Engine commands (i.e. setting options or requesting evaluations) should not be sent until this completion handler is called.
+* `EngineMessenger` now sends commands to the engines via `stdin`, see [Issue #11](https://github.com/chesskit-app/chesskit-engine/issues/11).
+  * This will allow for much simpler upgrades to existing engines, as well as the inclusion of new engines in the future.
+  * Special thanks [@dehlen](https://github.com/dehlen).
+
 # ChessKitEngine 0.3.0
 Released Wednesday, March 27, 2024.
 
@@ -32,7 +55,7 @@ Released Wednesday, April 26, 2023.
 #### New Features
 * Add [`LeelaChessZero (lc0)` engine](https://lczero.org)
   * Currently comes bundled with a neural network weights file `192x15_network`
-  
+
 #### Improvements
 * `Engine` initializer no longer has a default `engineType` (previously `.stockfish`)
   * Type must be specified using `Engine(type: <engine type>)`
@@ -63,7 +86,7 @@ Released Friday, April 14, 2023.
 Released Friday, April 14, 2023.
 
 * Fix build issue related to missing `ChessKitEngine_Cxx` target
-        
+
 # ChessKitEngine 0.1.0
 Released Friday, April 14, 2023.
 

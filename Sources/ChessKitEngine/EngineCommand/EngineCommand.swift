@@ -6,7 +6,7 @@
 /// Possible engine commands based on the
 /// [Universal Chess Interface (UCI)](https://backscattering.de/chess/uci/2006-04.txt).
 ///
-public enum EngineCommand {
+public enum EngineCommand: Equatable {
     
     /// `"debug [ on | off ]"`
     ///

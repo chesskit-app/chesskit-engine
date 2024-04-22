@@ -40,8 +40,7 @@ let package = Package(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"],
             resources: [
-                .copy("EngineTests/Resources/192x15_network"),
-                .copy("EngineTests/Resources/nn-1337b1adec5b.nnue")
+                .copy("EngineTests/Resources/192x15_network")
             ]
         )
     ],
@@ -70,7 +69,6 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/subprojects/eigen-3.4.0/test",
     "Engines/lc0/subprojects/eigen-3.4.0/unsupported",
     "Engines/lc0/third_party",
-    "Engines/lc0/src/main.cc",
     "Engines/lc0/src/utils/filesystem.win32.cc",
     "Engines/lc0/src/chess/board_test.cc",
     "Engines/lc0/src/chess/position_test.cc",
@@ -85,9 +83,9 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/src/trainingdata/",
     "Engines/lc0/src/neural/cuda/",
     "Engines/lc0/src/neural/dx/",
+    "Engines/lc0/src/neural/metal/",
     "Engines/lc0/src/neural/onednn/",
     "Engines/lc0/src/neural/onnx/",
     "Engines/lc0/src/neural/opencl/",
-    "Engines/lc0/src/neural/metal/",
     "Engines/lc0/src/neural/network_tf_cc.cc"
 ]
