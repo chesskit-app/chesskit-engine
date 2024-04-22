@@ -1,4 +1,5 @@
-# [unreleased]
+# ChessKitEngine 0.4.0
+Released Monday, April 22, 2024.
 
 #### Engine Upgrades
 * Update to [*Stockfish 16.1*](https://stockfishchess.org/blog/2024/stockfish-16-1/).
