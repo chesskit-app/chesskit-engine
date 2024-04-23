@@ -1,4 +1,5 @@
-# [unreleased]
+# ChessKitEngine 0.4.1
+Released Monday, April 22, 2024.
 
 #### Bug Fixes
 * Fix issue where engine responses containing a newline character would not be parsed correctly.
