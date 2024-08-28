@@ -22,7 +22,7 @@ For a related Swift package that manages chess logic, see [chesskit-swift](https
 ## Usage
 
 1. Add `chesskit-engine` as a dependency
-	* In an [app built in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app),
+	* in an [app built in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app),
 	* or [as a dependency to another Swift Package](https://www.swift.org/documentation/package-manager/#importing-dependencies).
 
 2. Next, import `ChessKitEngine` to use it in Swift code:
@@ -142,10 +142,6 @@ The following engines are currently supported:
 | :---: | --- | :---: | :---: | :---: |
 | <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [16.1](https://github.com/official-stockfish/Stockfish/tree/sf_16.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_16.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/wiki/UCI-&-Commands#setoption)
 | <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.30](https://github.com/LeelaChessZero/lc0/tree/v0.30.0) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.30.0/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
-
-## Author
-
-[@pdil](https://github.com/pdil)
 
 ## License
 

@@ -55,18 +55,15 @@ class BaseEngineTests: XCTestCase {
     }
     
     func testEngineSetup() {
-        let expectation = XCTestExpectation()
-
-        engine.start { [self] in
-            engine.send(command: .isready)
-        }
+        let expectation = self.expectation(description: "Expect engine \(engine.type.name) to start up.")
 
         engine.receiveResponse = {
             if $0 == .readyok {
                 expectation.fulfill()
             }
         }
-        
+
+        engine.start()
         wait(for: [expectation], timeout: 5)
     }
     

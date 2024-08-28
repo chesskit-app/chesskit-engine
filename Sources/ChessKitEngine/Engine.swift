@@ -8,7 +8,7 @@ import ChessKitEngineCore
 public class Engine {
 
     /// The type of the engine.
-    private let type: EngineType
+    public let type: EngineType
 
     /// Messenger used to communicate with engine.
     private let messenger: EngineMessenger
@@ -28,6 +28,8 @@ public class Engine {
     /// Engine must be running for `send(command:)` to work.
     public private(set) var isRunning = false
 
+    private var startupLoop: EngineSetupLoop
+
     private let queue = DispatchQueue(
         label: "ck-engine-queue",
         qos: .userInteractive
@@ -40,6 +42,7 @@ public class Engine {
     public init(type: EngineType) {
         self.type = type
         messenger = EngineMessenger(engineType: type.objc)
+        startupLoop = DefaultEngineSetupLoop()
     }
 
     deinit {
@@ -59,39 +62,39 @@ public class Engine {
     ///
     /// This must be called before sending any commands
     /// with `send(command:)`.
-    public func start(coreCount: Int? = nil, multipv: Int = 1, completion: @escaping () -> Void) {
+    public func start(
+        coreCount: Int? = nil,
+        multipv: Int = 1,
+        completion: @escaping () -> Void = {}
+    ) {
+        startupLoop.startupDidComplete = {
+            self.isRunning = true
+            self.performInitialSetup(
+                coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
+                multipv: multipv
+            )
+            DispatchQueue.main.async {
+                completion()
+            }
+        }
+
         messenger.responseHandler = { [weak self] response in
             guard let self else { return }
 
+            guard let parsed = EngineResponse(rawValue: response) else {
+                if !response.isEmpty {
+                    self.log(response)
+                }
+                return
+            }
+
+            self.log(parsed.rawValue)
+
+            if !self.isRunning, let next = startupLoop.nextCommand(given: parsed) {
+                self.send(command: next)
+            }
+            
             DispatchQueue.main.async {
-                guard let parsed = EngineResponse(rawValue: response) else {
-                    if !response.isEmpty {
-                        self.log(response)
-                    }
-                    return
-                }
-
-                self.log(parsed.rawValue)
-
-                guard self.isRunning else {
-                    // engine setup loop
-                    // <uci> → <uciok> → <isready> → <readok> → complete
-                    switch parsed {
-                    case .uciok:
-                        self.send(command: .isready)
-                    case .readyok:
-                        self.isRunning = true
-                        self.performInitialSetup(
-                            coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
-                            multipv: multipv
-                        )
-                        completion()
-                    default:
-                        break
-                    }
-                    return
-                }
-
                 self.receiveResponse(parsed)
             }
         }
