@@ -1,5 +1,8 @@
 # [unreleased]
 
+### Engine Upgrades
+* Update to [*Stockfish 17*](https://stockfishchess.org/blog/2024/stockfish-17).
+
 ### Improvements
 * `Engine.type` is now exposed publicly.
 

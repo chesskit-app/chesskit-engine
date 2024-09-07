@@ -30,7 +30,7 @@ public enum EngineType: Int {
     /// The current version of the given engine.
     public var version: String {
         switch self {
-        case .stockfish:    return "16.1"
+        case .stockfish:    return "17"
         case .lc0:          return "0.30"
         }
     }

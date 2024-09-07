@@ -55,10 +55,18 @@ class BaseEngineTests: XCTestCase {
     }
     
     func testEngineSetup() {
-        let expectation = self.expectation(description: "Expect engine \(engine.type.name) to start up.")
+        let expectation = self.expectation(
+            description: "Expect engine \(engine.type.name) to start up."
+        )
 
-        engine.receiveResponse = {
-            if $0 == .readyok {
+        engine.receiveResponse = { [weak self] response in
+            guard let self else { return }
+
+            if case let .id(id) = response, case let .name(name) = id {
+                XCTAssertTrue(name.contains(engine.type.version))
+            }
+
+            if response == .readyok {
                 expectation.fulfill()
             }
         }
