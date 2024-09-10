@@ -11,9 +11,8 @@ import XCTest
 /// Subclass `BaseEngineTests`, set `engineType` in `setUp()`,
 /// and then call `super.setUp()` to run common engine tests.
 ///
-/// For example:
-///
-/// ```
+/// #### Example
+/// ``` swift
 /// final class MyEngineTests: BaseEngineTests {
 ///
 ///     func override setUp() {
@@ -36,7 +35,6 @@ class BaseEngineTests: XCTestCase {
 
     /// The engine type to test.
     var engineType: EngineType!
-
     var engine: Engine!
 
     override func setUp() {
