@@ -11,9 +11,8 @@ import XCTest
 /// Subclass `BaseEngineTests`, set `engineType` in `setUp()`,
 /// and then call `super.setUp()` to run common engine tests.
 ///
-/// For example:
-///
-/// ```
+/// #### Example
+/// ``` swift
 /// final class MyEngineTests: BaseEngineTests {
 ///
 ///     func override setUp() {
@@ -24,7 +23,7 @@ import XCTest
 /// }
 /// ```
 class BaseEngineTests: XCTestCase {
-    
+
     override class var defaultTestSuite: XCTestSuite {
         // Disable tests in base test case with empty XCTestSuite
         if self == BaseEngineTests.self {
@@ -33,32 +32,35 @@ class BaseEngineTests: XCTestCase {
             return super.defaultTestSuite
         }
     }
-    
+
     /// The engine type to test.
     var engineType: EngineType!
-    /// The expected evaluation range for the engine in
-    /// the standard starting position.
-    var expectedStartingEvaluation: ClosedRange<Double> = 1...60
-    
     var engine: Engine!
-    
+
     override func setUp() {
         super.setUp()
-        
         engine = Engine(type: engineType)
     }
-    
+
     override func tearDown() {
         engine.stop()
         engine = nil
         super.tearDown()
     }
-    
-    func testEngineSetup() {
-        let expectation = self.expectation(description: "Expect engine \(engine.type.name) to start up.")
 
-        engine.receiveResponse = {
-            if $0 == .readyok {
+    func testEngineSetup() {
+        let expectation = self.expectation(
+            description: "Expect engine \(engine.type.name) to start up."
+        )
+
+        engine.receiveResponse = { [weak self] response in
+            guard let self else { return }
+
+            if case let .id(id) = response, case let .name(name) = id {
+                XCTAssertTrue(name.contains(engine.type.version))
+            }
+
+            if response == .readyok {
                 expectation.fulfill()
             }
         }
@@ -66,5 +68,5 @@ class BaseEngineTests: XCTestCase {
         engine.start()
         wait(for: [expectation], timeout: 5)
     }
-    
+
 }

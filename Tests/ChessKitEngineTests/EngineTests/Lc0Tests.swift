@@ -12,5 +12,5 @@ final class Lc0Tests: BaseEngineTests {
         engineType = .lc0
         super.setUp()
     }
-    
+
 }
