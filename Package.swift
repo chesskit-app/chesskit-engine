@@ -84,8 +84,11 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/src/neural/cuda/",
     "Engines/lc0/src/neural/dx/",
     "Engines/lc0/src/neural/metal/",
+    "Engines/lc0/src/neural/network_tf_cc.cc",
     "Engines/lc0/src/neural/onednn/",
     "Engines/lc0/src/neural/onnx/",
     "Engines/lc0/src/neural/opencl/",
-    "Engines/lc0/src/neural/network_tf_cc.cc"
+    "Engines/lc0/src/neural/xla/",
+    "Engines/lc0/src/rescorer/",
+    "Engines/lc0/src/rescorer_main.cc"
 ]

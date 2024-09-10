@@ -31,7 +31,7 @@ public enum EngineType: Int {
     public var version: String {
         switch self {
         case .stockfish:    return "17"
-        case .lc0:          return "0.30"
+        case .lc0:          return "0.31.1"
         }
     }
 

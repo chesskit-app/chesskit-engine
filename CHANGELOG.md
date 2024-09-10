@@ -2,6 +2,7 @@
 
 ### Engine Upgrades
 * Update to [*Stockfish 17*](https://stockfishchess.org/blog/2024/stockfish-17).
+* Update to [*LeelaChessZero 0.31.1*](https://github.com/LeelaChessZero/lc0/releases/tag/v0.31.1).
 
 ### Improvements
 * `Engine.type` is now exposed publicly.

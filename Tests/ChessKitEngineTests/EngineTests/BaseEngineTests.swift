@@ -24,7 +24,7 @@ import XCTest
 /// }
 /// ```
 class BaseEngineTests: XCTestCase {
-    
+
     override class var defaultTestSuite: XCTestSuite {
         // Disable tests in base test case with empty XCTestSuite
         if self == BaseEngineTests.self {
@@ -33,27 +33,23 @@ class BaseEngineTests: XCTestCase {
             return super.defaultTestSuite
         }
     }
-    
+
     /// The engine type to test.
     var engineType: EngineType!
-    /// The expected evaluation range for the engine in
-    /// the standard starting position.
-    var expectedStartingEvaluation: ClosedRange<Double> = 1...60
-    
+
     var engine: Engine!
-    
+
     override func setUp() {
         super.setUp()
-        
         engine = Engine(type: engineType)
     }
-    
+
     override func tearDown() {
         engine.stop()
         engine = nil
         super.tearDown()
     }
-    
+
     func testEngineSetup() {
         let expectation = self.expectation(
             description: "Expect engine \(engine.type.name) to start up."
@@ -74,5 +70,5 @@ class BaseEngineTests: XCTestCase {
         engine.start()
         wait(for: [expectation], timeout: 5)
     }
-    
+
 }
