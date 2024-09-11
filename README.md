@@ -108,7 +108,7 @@ engine.loggingEnabled = true
 ```
 
 ## Neural Networks
-Both `Stockfish 16.1` and `LeelaChessZero 0.30` require neural network files to be provided to the engine for computation.
+Both `Stockfish 17` and `LeelaChessZero 0.31.1` require neural network files to be provided to the engine for computation.
 In order to keep the package size small and allow for the greatest level of flexibility, these neural network files are **not** bundled with the package. Therefore they must be added to the app (either in the bundle or manually by a user) and then provided to the engine at runtime.
 
 They can be provided to the engine using the `.setoption(id:value:)` UCI commands included in `chesskit-engine`.
@@ -126,8 +126,8 @@ engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
 The following details the recommended files for each engine and where to obtain them.
 
 #### Stockfish
-* `"EvalFile"`: `nn-b1a57edbea57.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=b1a57edbea57&user=))
-* `"EvalFileSmall"`: `nn-baff1ede1f90.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=baff1ede1f90&user=))
+* `"EvalFile"`: `nn-1111cefa1111.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=1111cefa1111&user=))
+* `"EvalFileSmall"`: `nn-37f18f62d772.nnue` ([download here](https://tests.stockfishchess.org/nns?network_name=37f18f62d772&user=))
 * Other files from https://tests.stockfishchess.org can be used if desired.
 
 #### LeelaChessZero
@@ -140,8 +140,8 @@ The following details the recommended files for each engine and where to obtain 
 The following engines are currently supported:
 | | Engine  | Version | License | Options Reference |
 | :---: | --- | :---: | :---: | :---: |
-| <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [16.1](https://github.com/official-stockfish/Stockfish/tree/sf_16.1) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_16.1/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/wiki/UCI-&-Commands#setoption)
-| <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.30](https://github.com/LeelaChessZero/lc0/tree/v0.30.0) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.30.0/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
+| <img src="https://stockfishchess.org/images/logo/icon_512x512.png" width="25" /> | [Stockfish](https://stockfishchess.org) | [17](https://github.com/official-stockfish/Stockfish/tree/sf_17) | [GPL v3](https://github.com/official-stockfish/Stockfish/blob/sf_17/Copying.txt) | [🔗](https://github.com/official-stockfish/Stockfish/wiki/UCI-&-Commands#setoption)
+| <img src="https://lczero.org/images/logo.svg" width="25" /> | [lc0](https://lczero.org) | [0.31.1](https://github.com/LeelaChessZero/lc0/tree/v0.31.1) | [GPL v3](https://github.com/LeelaChessZero/lc0/blob/v0.31.1/COPYING) | [🔗](https://github.com/LeelaChessZero/lc0/wiki/Lc0-options)
 
 ## License
 

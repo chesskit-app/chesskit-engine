@@ -1,7 +1,9 @@
-# [unreleased]
+# ChessKitEngine 0.5.0
+Released Tuesday, September 10, 2024.
 
 ### Engine Upgrades
 * Update to [*Stockfish 17*](https://stockfishchess.org/blog/2024/stockfish-17).
+  * See new recommended NNUE files [EvalFile](https://tests.stockfishchess.org/nns?network_name=1111cefa1111&user=) and [EvalFileSmall](https://tests.stockfishchess.org/nns?network_name=37f18f62d772&user=)
 * Update to [*LeelaChessZero 0.31.1*](https://github.com/LeelaChessZero/lc0/releases/tag/v0.31.1).
 
 ### Improvements
