@@ -9,7 +9,7 @@ import XCTest
 class EngineResponseInfoTests: XCTestCase {
     
     func testStringConversion() {
-        let input = ChessKitEngineResponse.Info(
+        let input = EngineResponse.Info(
             depth: 1,
             seldepth: 0,
             time: 1,

@@ -36,7 +36,7 @@ public final class Engine {//}: Sendable {
     ///
     /// The returned `response` is of type `EngineResponse` which
     /// is a type-safe enum corresponding to the UCI protocol.
-    public var responsePublisher: PassthroughSubject<EngineResponse, Never>? = nil
+    public var responsePublisher = CurrentValueSubject<EngineResponse?, Never>(nil)
     
     /// Messenger used to communicate with engine.
     private let messenger: EngineMessenger
@@ -46,9 +46,7 @@ public final class Engine {//}: Sendable {
         label: "ck-engine-queue",
         qos: .userInteractive
     )
-    
-//    private var startupLoop = DefaultEngineSetupLoop()
-    
+        
     private var initialSetupComplete = false
 
     /// Initializes an engine with the provided `type`.
@@ -102,15 +100,7 @@ public final class Engine {//}: Sendable {
                 }
             }
             
-            responsePublisher?.send(parsed)
-//            if self?.isRunning == false,
-//                let next = self?.startupLoop.nextCommand(given: parsed) {
-//                self?.send(command: next)
-//            }
-            
-//            DispatchQueue.main.async {
-//                self.receiveResponse(parsed)
-//            }
+            responsePublisher.send(parsed)
         }
 
         messenger.start()

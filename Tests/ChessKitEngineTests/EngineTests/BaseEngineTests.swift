@@ -5,6 +5,7 @@
 
 import XCTest
 @testable import ChessKitEngine
+import Combine
 
 /// Base test case for testing included engines.
 ///
@@ -36,6 +37,7 @@ class BaseEngineTests: XCTestCase {
     /// The engine type to test.
     var engineType: EngineType!
     var engine: Engine!
+    var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
@@ -52,21 +54,21 @@ class BaseEngineTests: XCTestCase {
         let expectation = self.expectation(
             description: "Expect engine \(engine.type.name) to start up."
         )
-
-        engine.receiveResponse = { [weak self] response in
+        
+        engine.responsePublisher.sink{ [weak self] response in
             guard let self else { return }
 
             if case let .id(id) = response, case let .name(name) = id {
                 XCTAssertTrue(name.contains(engine.type.version))
             }
 
-            if response == .readyok {
+            if response == .readyok &&
+                engine.isRunning {
                 expectation.fulfill()
             }
-        }
+        }.store(in: &cancellables)
 
         engine.start()
         wait(for: [expectation], timeout: 5)
     }
-
 }

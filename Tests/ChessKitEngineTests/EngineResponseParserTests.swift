@@ -11,11 +11,11 @@ final class EngineResponseParserTests: XCTestCase {
     func testInvalidResponse() {
         let invalid = "invalidcommand test"
         XCTAssertNil(EngineResponseParser.parse(response: invalid))
-        XCTAssertNil(ChessKitEngineResponse(rawValue: invalid))
+        XCTAssertNil(EngineResponse(rawValue: invalid))
 
         let empty = ""
         XCTAssertNil(EngineResponseParser.parse(response: empty))
-        XCTAssertNil(ChessKitEngineResponse(rawValue: empty))
+        XCTAssertNil(EngineResponse(rawValue: empty))
     }
 
     func testParseID() {
@@ -25,7 +25,7 @@ final class EngineResponseParserTests: XCTestCase {
             .id(.name("Engine Name"))
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputName),
+            EngineResponse(rawValue: inputName),
             .id(.name("Engine Name"))
         )
 
@@ -35,13 +35,13 @@ final class EngineResponseParserTests: XCTestCase {
             .id(.author(("Engine Author")))
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputAuthor),
+            EngineResponse(rawValue: inputAuthor),
             .id(.author(("Engine Author")))
         )
 
         let idInvalid = "id invalid input"
         XCTAssertNil(EngineResponseParser.parse(response: idInvalid))
-        XCTAssertNil(ChessKitEngineResponse(rawValue: idInvalid))
+        XCTAssertNil(EngineResponse(rawValue: idInvalid))
     }
 
     func testParseUciok() {
@@ -51,7 +51,7 @@ final class EngineResponseParserTests: XCTestCase {
             .uciok
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: input),
+            EngineResponse(rawValue: input),
             .uciok
         )
     }
@@ -63,7 +63,7 @@ final class EngineResponseParserTests: XCTestCase {
             .readyok
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: input),
+            EngineResponse(rawValue: input),
             .readyok
         )
     }
@@ -75,7 +75,7 @@ final class EngineResponseParserTests: XCTestCase {
             .bestmove(move: "e2e4", ponder: nil)
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputBestMove),
+            EngineResponse(rawValue: inputBestMove),
             .bestmove(move: "e2e4", ponder: nil)
         )
 
@@ -85,30 +85,30 @@ final class EngineResponseParserTests: XCTestCase {
             .bestmove(move: "e2e4", ponder: "e7e5")
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputPonder),
+            EngineResponse(rawValue: inputPonder),
             .bestmove(move: "e2e4", ponder: "e7e5")
         )
 
         let inputBestMoveWithNewline1 = "bestmove\nc8d7 ponder e1c1"
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputBestMoveWithNewline1),
+            EngineResponse(rawValue: inputBestMoveWithNewline1),
             .bestmove(move: "c8d7", ponder: "e1c1")
         )
 
         let inputBestMoveWithNewline2 = "bestmove \nc8d7 ponder e1c1"
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: inputBestMoveWithNewline2),
+            EngineResponse(rawValue: inputBestMoveWithNewline2),
             .bestmove(move: "c8d7", ponder: "e1c1")
         )
 
         let bestmoveInvalid = "bestmove"
         XCTAssertNil(EngineResponseParser.parse(response: bestmoveInvalid))
-        XCTAssertNil(ChessKitEngineResponse(rawValue: bestmoveInvalid))
+        XCTAssertNil(EngineResponse(rawValue: bestmoveInvalid))
     }
 
     func testParseInfo() {
         let input = "info depth 1 seldepth 0 score cp 8.37 mate -4 upperbound pv e2e4 e7e5 g1f3 nodes 10 currline 4 d2d4 g8f6 c2c4 e7e6 nps 8 string This is a test string with real tokens inserted such as pv and nodes and score lowerbound."
-        let output = ChessKitEngineResponse.Info(
+        let output = EngineResponse.Info(
             depth: 1,
             seldepth: 0,
             nodes: 10,
@@ -131,14 +131,14 @@ final class EngineResponseParserTests: XCTestCase {
             .info(output)
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: input),
+            EngineResponse(rawValue: input),
             .info(output)
         )
     }
 
     func testParseExtraInfo() {
         let input = "info time 1 multipv 2 currmove e2e4 currmovenumber 3 hashfull 4.56 tbhits 7 sbhits 8 cpuload 9 refutation c7c5 d2d4"
-        let output = ChessKitEngineResponse.Info(
+        let output = EngineResponse.Info(
             time: 1,
             multipv: 2,
             currmove: "e2e4",
@@ -156,21 +156,21 @@ final class EngineResponseParserTests: XCTestCase {
             .info(output)
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: input),
+            EngineResponse(rawValue: input),
             .info(output)
         )
     }
 
     func testParseInfoWithInvalidScore() {
         let input = "info score test 5"
-        let output = ChessKitEngineResponse.Info(score: .init())
+        let output = EngineResponse.Info(score: .init())
 
         XCTAssertEqual(
             EngineResponseParser.parse(response: input),
             .info(output)
         )
         XCTAssertEqual(
-            ChessKitEngineResponse(rawValue: input),
+            EngineResponse(rawValue: input),
             .info(output)
         )
     }
