@@ -165,4 +165,18 @@ public enum EngineCommand: Equatable {
             return "quit"
         }
     }
+    
+    internal static func nextSetupLoopCommand(given response: EngineResponse?) -> EngineCommand? {
+        // engine setup loop
+        // <uci> → <uciok> → <isready> → <readok> → complete
+
+        switch response {
+        case nil:
+            return .uci
+        case .uciok:
+            return .isready
+        default:
+            return nil
+        }
+    }
 }

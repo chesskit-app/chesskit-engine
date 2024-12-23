@@ -7,7 +7,7 @@
 /// [Universal Chess Interface (UCI)](https://backscattering.de/chess/uci/2006-04.txt).
 ///
 public enum EngineResponse {
-
+    
     /// `"id name <x>"`, `"id author <x>"`
     ///
     /// See [UCI protocol documentation](https://backscattering.de/chess/uci/2006-04.txt)

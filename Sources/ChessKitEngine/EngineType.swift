@@ -6,7 +6,7 @@
 import ChessKitEngineCore
 
 /// Possible engines available in `ChessKitEngine`.
-public enum EngineType: Int {
+public enum EngineType: Int, Sendable {
 
     case stockfish
     case lc0
