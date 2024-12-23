@@ -4,21 +4,16 @@
 //
 
 import ChessKitEngineCore
+import Combine
 
-public class Engine {
+//private class EngineConfiguration {
+//    
+//}
+
+public final class Engine {//}: Sendable {
 
     /// The type of the engine.
     public let type: EngineType
-
-    /// Messenger used to communicate with engine.
-    private let messenger: EngineMessenger
-
-    /// Whether logging should be enabled.
-    ///
-    /// If set to `true`, engine commands and responses
-    /// will be logged to the console. The default value is
-    /// `false`.
-    public var loggingEnabled = false
 
     /// Whether the engine is currently running.
     ///
@@ -27,13 +22,34 @@ public class Engine {
     ///
     /// Engine must be running for `send(command:)` to work.
     public private(set) var isRunning = false
+    
+    /// Whether logging should be enabled.
+    ///
+    /// If set to `true`, engine commands and responses
+    /// will be logged to the console. The default value is
+    /// `false`.
+    public var loggingEnabled = false
+    
+    /// Closure that is called when engine responses are received.
+    ///
+    /// - parameter response: The response received from the engine.
+    ///
+    /// The returned `response` is of type `EngineResponse` which
+    /// is a type-safe enum corresponding to the UCI protocol.
+    public var responsePublisher: PassthroughSubject<EngineResponse, Never>? = nil
+    
+    /// Messenger used to communicate with engine.
+    private let messenger: EngineMessenger
 
-    private var startupLoop: EngineSetupLoop
-
+    
     private let queue = DispatchQueue(
         label: "ck-engine-queue",
         qos: .userInteractive
     )
+    
+//    private var startupLoop = DefaultEngineSetupLoop()
+    
+    private var initialSetupComplete = false
 
     /// Initializes an engine with the provided `type`.
     ///
@@ -42,7 +58,6 @@ public class Engine {
     public init(type: EngineType) {
         self.type = type
         messenger = EngineMessenger(engineType: type.objc)
-        startupLoop = DefaultEngineSetupLoop()
     }
 
     deinit {
@@ -56,47 +71,46 @@ public class Engine {
     /// cores available on the device.
     /// - parameter multipv: The number of lines the engine should return,
     /// sent via the `"MultiPV"` UCI option.
-    /// - parameter completion: The completion handler that is called when
-    /// the engine setup is complete. You must wait for this to be called
-    /// before sending further commands to the engine.
     ///
-    /// This must be called before sending any commands
-    /// with `send(command:)`.
+    /// - note You must call this function and wait for ``EngineResponse/readyok``
+    /// before sending any commands with ``send(command:)``.
     public func start(
         coreCount: Int? = nil,
-        multipv: Int = 1,
-        completion: @escaping () -> Void = {}
+        multipv: Int = 1//,
+//        completion: @escaping () -> Void = {}
     ) {
-        startupLoop.startupDidComplete = {
-            self.isRunning = true
-            self.performInitialSetup(
-                coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
-                multipv: multipv
-            )
-            DispatchQueue.main.async {
-                completion()
-            }
-        }
-
         messenger.responseHandler = { [weak self] response in
             guard let self else { return }
 
             guard let parsed = EngineResponse(rawValue: response) else {
                 if !response.isEmpty {
-                    self.log(response)
+                    log(response)
                 }
                 return
             }
 
-            self.log(parsed.rawValue)
+            log(parsed.rawValue)
 
-            if !self.isRunning, let next = startupLoop.nextCommand(given: parsed) {
-                self.send(command: next)
+            if !isRunning {
+                if parsed == .readyok {
+                    performInitialSetup(
+                        coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
+                        multipv: multipv
+                    )
+                } else if let next = EngineCommand.nextSetupLoopCommand(given: parsed) {
+                    send(command: next)
+                }
             }
             
-            DispatchQueue.main.async {
-                self.receiveResponse(parsed)
-            }
+            responsePublisher?.send(parsed)
+//            if self?.isRunning == false,
+//                let next = self?.startupLoop.nextCommand(given: parsed) {
+//                self?.send(command: next)
+//            }
+            
+//            DispatchQueue.main.async {
+//                self.receiveResponse(parsed)
+//            }
         }
 
         messenger.start()
@@ -140,16 +154,6 @@ public class Engine {
         }
     }
 
-    /// Closure that is called when engine responses are received.
-    ///
-    /// - parameter response: The response received from the engine.
-    ///
-    /// The returned `response` is of type `EngineResponse` which
-    /// is a type-safe enum corresponding to the UCI protocol.
-    public var receiveResponse: (_ response: EngineResponse) -> Void = {
-        _ in
-    }
-
     // MARK: - Private
 
     /// Logs `message` if `loggingEnabled` is `true`.
@@ -158,12 +162,12 @@ public class Engine {
             Logging.print(message)
         }
     }
-
-    private var initialSetupComplete = false
-
+    
     /// Sets initial engine options.
     private func performInitialSetup(coreCount: Int, multipv: Int) {
         guard !initialSetupComplete else { return }
+        
+        isRunning = true
 
         // configure engine-specific options
         type.setupCommands.forEach(send)
