@@ -7,15 +7,18 @@ import ChessKitEngineCore
 import AsyncAlgorithms
 
 public final class Engine: Sendable {
+    
+    //MARK: - Public properties
+    
     /// The type of the engine.
     public let type: EngineType
 
     /// Whether the engine is currently running.
     ///
-    /// - To start the engine, call ``start()``.
+    /// - To start the engine, call ``start(coreCount:multipv:)``.
     /// - To stop the engine, call ``stop()``.
     ///
-    /// Engine must be running for `send(command:)` to work.
+    /// Engine must be running for ``send(command:)`` to work.
     public var isRunning: Bool {
         get async { await engineConfigurationActor.isRunning }
     }
@@ -27,20 +30,19 @@ public final class Engine: Sendable {
     /// `false`.
     ///
     ///  Can be set via ``setLoggingEnabled(_:)`` function.
-    
     public var loggingEnabled: Bool {
         get async { await engineConfigurationActor.loggingEnabled }
     }
     
-    /// AsyncChannel that is called when engine responses are received.
+    /// an AsyncChannel that is called when engine responses are received.
     ///
-    /// - parameter response: The response received from the engine.
-    ///
-    /// The underlying value is of type ``EngineResponse`` which
-    /// is a type-safe sendable enum corresponding to the UCI protocol.
+    /// The underlying value ``EngineResponse`` contains the engine
+    /// response corresponding to the UCI protocol.
     public var responseChannel : AsyncStream<EngineResponse>? {
         get async { await engineConfigurationActor.asyncStream }
     }
+    
+    //MARK: - Private properties
     
     private let engineConfigurationActor: EngineConfiguration
     
@@ -53,8 +55,9 @@ public final class Engine: Sendable {
         qos: .userInteractive
     )
         
-
-    /// Initializes an engine with the provided `type`.
+    //MARK: - Life cycle functions
+    
+    /// Initializes an engine with the provided `type` and optional logging enabled flag.
     ///
     /// - parameter type: The type of engine to use.
     /// - parameter loggingEnabled: If set to `true`, engine commands and responses
@@ -73,7 +76,12 @@ public final class Engine: Sendable {
     //        stop()
     //    }
 
+    //MARK: - Public functions
+    
     /// Starts the engine.
+    ///
+    /// You must call this function and wait for ``EngineResponse/readyok``
+    /// before you can ask the engine to do any work.
     ///
     /// - parameter coreCount: The number of processor cores to use for engine
     /// calculation. The default value is `nil` which uses the number of
@@ -81,9 +89,6 @@ public final class Engine: Sendable {
     /// - parameter multipv: The number of lines the engine should return,
     /// sent via the `"MultiPV"` UCI option.
     ///
-    /// - note You must call this function and wait for ``EngineResponse/readyok``
-    /// before sending any commands with ``send(command:)``.
-    
     public func start(
         coreCount: Int? = nil,
         multipv: Int = 1
@@ -103,9 +108,8 @@ public final class Engine: Sendable {
     /// Stops the engine.
     ///
     /// Call this to stop all engine calculation and clean up.
-    /// After calling ``stop()``, ``start()`` must be called before
+    /// After calling ``stop()``, ``start(coreCount:multipv:)`` must be called before
     /// sending any more commands with ``send(command:)``.
-    ///
     ///
     /// - note: as temporary fix this function must be called before deiniting the engine.
     public func stop() async {
@@ -127,8 +131,9 @@ public final class Engine: Sendable {
     /// - parameter command: The command to send.
     ///
     /// Commands must be of type ``EngineCommand`` to ensure
-    /// validity. While the engine is processing commands or
-    /// thinking, any responses will be returned via ``responseChannel``.
+    /// validity.
+    ///
+    /// Any responses will be returned via ``responseChannel``.
     public func send(command: EngineCommand) async {
         guard await isRunning || [.uci, .isready].contains(command) else {
             await log("Engine is not running, call start() first.")
@@ -142,14 +147,19 @@ public final class Engine: Sendable {
         }
     }
     
-    public func setLoggingEnabled(_ enabled: Bool) {
+    /// Enable printing logs to console.
+    ///
+    /// - parameter loggingEnabled: If set to `true`, engine commands and responses
+    ///   will be logged to the console. The default value is `false`.
+    ///
+    public func setLoggingEnabled(_ loggingEnabled: Bool) {
         Task {
             await engineConfigurationActor
                 .setLoggingEnabled(loggingEnabled: loggingEnabled)
         }
     }
 
-    // MARK: - Private
+    // MARK: - Private functions
 
     /// Logs `message` if `loggingEnabled` is `true`.
     private func log(_ message: String) async {
@@ -215,6 +225,8 @@ public final class Engine: Sendable {
     }
 
 }
+
+//MARK: EngineConfiguration actor
 
 //An actor to hold the configuration for the engine class.
 //Since engine now conforms to sendable protocol, we need to
