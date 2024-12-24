@@ -14,6 +14,7 @@
 # pragma mark - EngineMessenger
 
 /// Messenger to communicate with the specified chess engine.
+NS_SWIFT_SENDABLE
 @interface EngineMessenger : NSObject
 
 /// Called whenever a response is received from the engine.

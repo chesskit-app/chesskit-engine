@@ -7,7 +7,7 @@ public extension EngineCommand {
     
     /// Possible positions that can be passed to
     /// `EngineCommand.position`.
-    enum PositionString: Equatable, RawRepresentable {
+    enum PositionString: Equatable, RawRepresentable, Sendable {
         /// Any FEN position, given in the provided `String`.
         case fen(String)
         /// The starting position.

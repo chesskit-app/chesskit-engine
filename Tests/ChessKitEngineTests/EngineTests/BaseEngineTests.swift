@@ -5,7 +5,6 @@
 
 import XCTest
 @testable import ChessKitEngine
-import Combine
 
 /// Base test case for testing included engines.
 ///
@@ -23,6 +22,7 @@ import Combine
 ///
 /// }
 /// ```
+///
 class BaseEngineTests: XCTestCase {
 
     override class var defaultTestSuite: XCTestSuite {
@@ -37,7 +37,6 @@ class BaseEngineTests: XCTestCase {
     /// The engine type to test.
     var engineType: EngineType!
     var engine: Engine!
-    var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
@@ -50,25 +49,34 @@ class BaseEngineTests: XCTestCase {
         super.tearDown()
     }
 
-    func testEngineSetup() {
+    func testEngineSetup() async {
         let expectation = self.expectation(
             description: "Expect engine \(engine.type.name) to start up."
         )
         
-        engine.responsePublisher.sink{ [weak self] response in
-            guard let self else { return }
-
-            if case let .id(id) = response, case let .name(name) = id {
-                XCTAssertTrue(name.contains(engine.type.version))
-            }
-
-            if response == .readyok &&
-                engine.isRunning {
-                expectation.fulfill()
-            }
-        }.store(in: &cancellables)
-
+        guard let engine = self.engine else {
+            XCTFail("Engine is nil")
+            return
+        }
+        
         engine.start()
-        wait(for: [expectation], timeout: 5)
+        
+        Task{
+            for await response in await engine.responseChannel! {
+                if case let .id(id) = response,
+                    case let .name(name) = id {
+                    let version = engine.type.version
+                    XCTAssertTrue(name.contains(version))
+                }
+                
+                let isRunning = await engine.isRunning
+                
+                if response == .readyok &&
+                    isRunning {
+                    expectation.fulfill()
+                }
+            }
+        }
+        await fulfillment(of: [expectation], timeout: 5)
     }
 }

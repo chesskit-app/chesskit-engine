@@ -4,63 +4,74 @@
 //
 
 import ChessKitEngineCore
-import Combine
+import AsyncAlgorithms
 
-//private class EngineConfiguration {
-//    
-//}
-
-public final class Engine {//}: Sendable {
-
+public final class Engine: Sendable {
     /// The type of the engine.
     public let type: EngineType
 
     /// Whether the engine is currently running.
     ///
-    /// - To start the engine, call `start()`.
-    /// - To stop the engine, call `stop()`.
+    /// - To start the engine, call ``start()``.
+    /// - To stop the engine, call ``stop()``.
     ///
     /// Engine must be running for `send(command:)` to work.
-    public private(set) var isRunning = false
+    public var isRunning: Bool {
+        get async { await engineConfigurationActor.isRunning }
+    }
     
     /// Whether logging should be enabled.
     ///
     /// If set to `true`, engine commands and responses
     /// will be logged to the console. The default value is
     /// `false`.
-    public var loggingEnabled = false
+    ///
+    ///  Can be set via ``setLoggingEnabled(_:)`` function.
     
-    /// Closure that is called when engine responses are received.
+    public var loggingEnabled: Bool {
+        get async { await engineConfigurationActor.loggingEnabled }
+    }
+    
+    /// AsyncChannel that is called when engine responses are received.
     ///
     /// - parameter response: The response received from the engine.
     ///
-    /// The returned `response` is of type `EngineResponse` which
-    /// is a type-safe enum corresponding to the UCI protocol.
-    public var responsePublisher = CurrentValueSubject<EngineResponse?, Never>(nil)
+    /// The underlying value is of type ``EngineResponse`` which
+    /// is a type-safe sendable enum corresponding to the UCI protocol.
+    public var responseChannel : AsyncStream<EngineResponse>? {
+        get async { await engineConfigurationActor.asyncStream }
+    }
+    
+    private let engineConfigurationActor: EngineConfiguration
     
     /// Messenger used to communicate with engine.
+    ///
     private let messenger: EngineMessenger
-
     
     private let queue = DispatchQueue(
         label: "ck-engine-queue",
         qos: .userInteractive
     )
         
-    private var initialSetupComplete = false
 
     /// Initializes an engine with the provided `type`.
     ///
     /// - parameter type: The type of engine to use.
-    ///
-    public init(type: EngineType) {
+    /// - parameter loggingEnabled: If set to `true`, engine commands and responses
+    ///   will be logged to the console. The default value is `false`.
+    public init(type: EngineType, loggingEnabled: Bool = false) {
         self.type = type
-        messenger = EngineMessenger(engineType: type.objc)
+        self.messenger = EngineMessenger(engineType: type.objc)
+        self.engineConfigurationActor = EngineConfiguration(loggingEnabled: loggingEnabled)
     }
 
-    deinit {
-        stop()
-    }
+
+    // This no longer work in async environment as stop function outlives the deinit function.
+    // Support for async deinit should be added in a future version of Swift (6.1)
+    // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0371-isolated-synchronous-deinit.md
+    //    deinit {
+    //        stop()
+    //    }
 
     /// Starts the engine.
     ///
@@ -72,104 +83,192 @@ public final class Engine {//}: Sendable {
     ///
     /// - note You must call this function and wait for ``EngineResponse/readyok``
     /// before sending any commands with ``send(command:)``.
+    
     public func start(
         coreCount: Int? = nil,
-        multipv: Int = 1//,
-//        completion: @escaping () -> Void = {}
+        multipv: Int = 1
+    ) {
+        Task { @MainActor in
+            await engineConfigurationActor.setAsyncStream()
+            
+            engineResponseAsync(coreCount: coreCount, multipv: multipv)
+
+            messenger.start()
+
+            // start engine setup loop
+            await send(command: .uci)
+        }
+    }
+    
+    private func engineResponseAsync(
+        coreCount: Int? = nil,
+        multipv: Int = 1
     ) {
         messenger.responseHandler = { [weak self] response in
-            guard let self else { return }
-
-            guard let parsed = EngineResponse(rawValue: response) else {
-                if !response.isEmpty {
-                    log(response)
+            Task{ [weak self] in
+                guard let self,
+                      let parsed = EngineResponse(rawValue: response) else {
+                    if !response.isEmpty {
+                        await self?.log(response)
+                    }
+                    return
                 }
-                return
-            }
-
-            log(parsed.rawValue)
-
-            if !isRunning {
-                if parsed == .readyok {
-                    performInitialSetup(
-                        coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
-                        multipv: multipv
-                    )
-                } else if let next = EngineCommand.nextSetupLoopCommand(given: parsed) {
-                    send(command: next)
+                    
+                await self.log(parsed.rawValue)
+                    
+                if await !self.isRunning {
+                    if parsed == .readyok {
+                        await self.performInitialSetup(
+                            coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
+                            multipv: multipv
+                        )
+                    } else if let next = EngineCommand.nextSetupLoopCommand(
+                        given: parsed
+                    ) {
+                        await self.send(command: next)
+                    }
                 }
+                await self.engineConfigurationActor.streamContinuation?.yield(parsed)
             }
-            
-            responsePublisher.send(parsed)
         }
-
-        messenger.start()
-
-        // start engine setup loop
-        send(command: .uci)
     }
 
     /// Stops the engine.
     ///
     /// Call this to stop all engine calculation and clean up.
-    /// After calling `stop()`, `start()` must be called before
-    /// sending any more commands with `send(command:)`.
-    public func stop() {
-        guard isRunning else { return }
-
-        send(command: .stop)
-        send(command: .quit)
+    /// After calling ``stop()``, ``start()`` must be called before
+    /// sending any more commands with ``send(command:)``.
+    ///
+    ///
+    /// - note: as temporary fix this function must be called before deiniting the engine.
+    public func stop() async {
+        guard await isRunning == true else { return }
+            
+        await send(command: .stop)
+        await send(command: .quit)
         messenger.stop()
-
-        isRunning = false
-        initialSetupComplete = false
+            
+            
+        await engineConfigurationActor.setIsRunning(isRunning: false)
+        await engineConfigurationActor
+            .setInitialSetupComplete(initialSetupComplete: false)
+        await engineConfigurationActor.streamContinuation?.finish()
     }
 
     /// Sends a command to the engine.
     ///
     /// - parameter command: The command to send.
     ///
-    /// Commands must be of type `EngineCommand` to ensure
+    /// Commands must be of type ``EngineCommand`` to ensure
     /// validity. While the engine is processing commands or
-    /// thinking, any responses will be returned via `receiveResponse`.
-    public func send(command: EngineCommand) {
-        guard isRunning || [.uci, .isready].contains(command) else {
-            log("Engine is not running, call start() first.")
+    /// thinking, any responses will be returned via ``responseChannel``.
+    public func send(command: EngineCommand) async {
+        guard await isRunning || [.uci, .isready].contains(command) else {
+            await log("Engine is not running, call start() first.")
             return
         }
 
+        await log(command.rawValue)
+        
         queue.sync {
-            log(command.rawValue)
             messenger.sendCommand(command.rawValue)
+        }
+    }
+    
+    public func setLoggingEnabled(_ enabled: Bool) {
+        Task {
+            await engineConfigurationActor
+                .setLoggingEnabled(loggingEnabled: loggingEnabled)
         }
     }
 
     // MARK: - Private
 
     /// Logs `message` if `loggingEnabled` is `true`.
-    private func log(_ message: String) {
-        if loggingEnabled {
+    private func log(_ message: String) async {
+        if await loggingEnabled {
             Logging.print(message)
         }
     }
     
     /// Sets initial engine options.
-    private func performInitialSetup(coreCount: Int, multipv: Int) {
-        guard !initialSetupComplete else { return }
+    private func performInitialSetup(coreCount: Int, multipv: Int) async {
+        guard await !engineConfigurationActor.initialSetupComplete else { return }
         
-        isRunning = true
+        await engineConfigurationActor.setIsRunning(isRunning: true)
 
         // configure engine-specific options
-        type.setupCommands.forEach(send)
+        for command in type.setupCommands {
+            await send(command: command)
+        }
 
         // configure common engine options
-        send(command: .setoption(
+        await send(command: .setoption(
             id: "Threads",
             value: "\(max(coreCount - 1, 1))"
         ))
-        send(command: .setoption(id: "MultiPV", value: "\(multipv)"))
+        await send(command: .setoption(id: "MultiPV", value: "\(multipv)"))
 
-        initialSetupComplete = true
+        await engineConfigurationActor
+            .setInitialSetupComplete(initialSetupComplete:  true)
     }
 
+}
+
+//An actor to hold the configuration for the engine class.
+//Since engine now conforms to sendable protocol, we need to
+//move the mutable data into async safe environment.
+//
+fileprivate actor EngineConfiguration: Sendable {
+    /// Whether the engine is currently running.
+    private(set) var isRunning = false
+    
+    /// Whether logging should be enabled.
+    private(set) var loggingEnabled = false
+    
+    /// Whether the initial engine setup was completed
+    private(set) var initialSetupComplete = false
+    
+    /// An async stream to notify the end user about engine responses
+    private(set) var asyncStream: AsyncStream<EngineResponse>?
+    
+    /// A reference to AsyncStream's continuation for later access by `EngineMessenger.responseHandler`
+    private(set) var streamContinuation: AsyncStream<EngineResponse>.Continuation?
+    
+    init(loggingEnabled: Bool = false) {
+        self.loggingEnabled = loggingEnabled
+        
+        Task{ await setAsyncStream() }
+    }
+    
+    func setLoggingEnabled(loggingEnabled: Bool) async {
+        self.loggingEnabled = loggingEnabled
+    }
+    
+    func setInitialSetupComplete(initialSetupComplete: Bool) async {
+        self.initialSetupComplete = initialSetupComplete
+    }
+    
+    func setIsRunning(isRunning: Bool) async {
+        self.isRunning = isRunning
+    }
+    
+    func setAsyncStream() async {
+        guard self.asyncStream == nil else { return }
+        
+        self.asyncStream = AsyncStream { (continuation: AsyncStream<EngineResponse>.Continuation) -> Void in
+            Task{ await setStreamContinuation(continuation) }
+        }
+    }
+    
+    private func clearAsyncStream() async {
+        self.asyncStream = nil
+    }
+    
+    private func setStreamContinuation(_ continuation: AsyncStream<EngineResponse>.Continuation?) async {
+        self.streamContinuation = continuation
+        self.streamContinuation?.onTermination = { [weak self] _ in
+            Task{ await self?.clearAsyncStream() }
+        }
+    }
 }

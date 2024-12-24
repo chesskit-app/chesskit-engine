@@ -6,7 +6,7 @@
 /// Possible engine responses based on the
 /// [Universal Chess Interface (UCI)](https://backscattering.de/chess/uci/2006-04.txt).
 ///
-public enum EngineResponse {
+public enum EngineResponse: Sendable {
     
     /// `"id name <x>"`, `"id author <x>"`
     ///
