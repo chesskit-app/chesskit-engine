@@ -99,39 +99,6 @@ public final class Engine: Sendable {
             await send(command: .uci)
         }
     }
-    
-    private func engineResponseAsync(
-        coreCount: Int? = nil,
-        multipv: Int = 1
-    ) {
-        messenger.responseHandler = { [weak self] response in
-            Task{ [weak self] in
-                guard let self,
-                      let parsed = EngineResponse(rawValue: response) else {
-                    if !response.isEmpty {
-                        await self?.log(response)
-                    }
-                    return
-                }
-                    
-                await self.log(parsed.rawValue)
-                    
-                if await !self.isRunning {
-                    if parsed == .readyok {
-                        await self.performInitialSetup(
-                            coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
-                            multipv: multipv
-                        )
-                    } else if let next = EngineCommand.nextSetupLoopCommand(
-                        given: parsed
-                    ) {
-                        await self.send(command: next)
-                    }
-                }
-                await self.engineConfigurationActor.streamContinuation?.yield(parsed)
-            }
-        }
-    }
 
     /// Stops the engine.
     ///
@@ -188,6 +155,40 @@ public final class Engine: Sendable {
     private func log(_ message: String) async {
         if await loggingEnabled {
             Logging.print(message)
+        }
+    }
+    
+    /// convinience function to set up `messenger.responseHandler`
+    private func engineResponseAsync(
+        coreCount: Int? = nil,
+        multipv: Int = 1
+    ) {
+        messenger.responseHandler = { [weak self] response in
+            Task{ [weak self] in
+                guard let self,
+                      let parsed = EngineResponse(rawValue: response) else {
+                    if !response.isEmpty {
+                        await self?.log(response)
+                    }
+                    return
+                }
+                    
+                await self.log(parsed.rawValue)
+                    
+                if await !self.isRunning {
+                    if parsed == .readyok {
+                        await self.performInitialSetup(
+                            coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
+                            multipv: multipv
+                        )
+                    } else if let next = EngineCommand.nextSetupLoopCommand(
+                        given: parsed
+                    ) {
+                        await self.send(command: next)
+                    }
+                }
+                await self.engineConfigurationActor.streamContinuation?.yield(parsed)
+            }
         }
     }
     
