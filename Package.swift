@@ -45,10 +45,7 @@ let package = Package(
         ),
         .testTarget(
             name: "ChessKitEngineTests",
-            dependencies: [
-                "ChessKitEngine",
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
-            ],
+            dependencies: ["ChessKitEngine"],
             resources: [
                 .copy("EngineTests/Resources/192x15_network")
             ]
