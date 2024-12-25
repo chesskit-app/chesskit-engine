@@ -44,10 +44,10 @@ public final class Engine: Sendable {
     
     //MARK: - Private properties
     
+    ///Actor used to hold mutating data in a thread safe environment.
     private let engineConfigurationActor: EngineConfiguration
     
     /// Messenger used to communicate with engine.
-    ///
     private let messenger: EngineMessenger
     
     private let queue = DispatchQueue(
@@ -57,7 +57,7 @@ public final class Engine: Sendable {
         
     //MARK: - Life cycle functions
     
-    /// Initializes an engine with the provided `type` and optional logging enabled flag.
+    /// Initializes an engine with the provided ``EngineType`` and optional logging enabled flag.
     ///
     /// - parameter type: The type of engine to use.
     /// - parameter loggingEnabled: If set to `true`, engine commands and responses
@@ -69,7 +69,7 @@ public final class Engine: Sendable {
     }
 
 
-    // This no longer work in async environment as stop function outlives the deinit function.
+    // This no longer work in an async environment as stop function outlives the deinit function.
     // Support for async deinit should be added in a future version of Swift (6.1)
     // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0371-isolated-synchronous-deinit.md
     //    deinit {
