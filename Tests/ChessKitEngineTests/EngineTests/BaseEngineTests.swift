@@ -43,10 +43,10 @@ class BaseEngineTests: XCTestCase {
         engine = Engine(type: engineType)
     }
 
-    override func tearDown() {
-        engine.stop()
+    override func tearDown() async throws {
+        await engine.stop()
         engine = nil
-        super.tearDown()
+        try? await super.tearDown()
     }
 
     func testEngineSetup() async {
