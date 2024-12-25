@@ -79,4 +79,48 @@ class BaseEngineTests: XCTestCase {
         }
         await fulfillment(of: [expectation], timeout: 5)
     }
+
+    func testEngineStop() async {
+        let expectationStartEngine = self.expectation(
+            description: "Expect engine \(engine.type.name) to start up."
+        )
+        
+        let expectationStopEngine = self.expectation(
+            description: "Expect engine \(engine.type.name) to stop gracefully."
+        )
+        
+        guard let engine = self.engine else {
+            XCTFail("Engine is nil")
+            return
+        }
+        
+        engine.start()
+            
+        Task{
+            for await response in await engine.responseChannel! {
+                let isRunning = await engine.isRunning
+                
+                if response == .readyok &&
+                    isRunning {
+                    expectationStartEngine.fulfill()
+                    break
+                }
+            }
+            
+            await engine.stop()
+            
+            if await !engine.isRunning,
+               await engine.responseChannel == nil {
+                expectationStopEngine.fulfill()
+            }
+        }
+        
+        await fulfillment(of: [expectationStartEngine, expectationStopEngine], timeout: 5)
+    }
+}
+
+
+@globalActor
+actor TestActor: GlobalActor {
+    public static var shared = TestActor()
 }

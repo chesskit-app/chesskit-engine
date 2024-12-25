@@ -81,7 +81,7 @@ public final class Engine: Sendable {
     /// Starts the engine.
     ///
     /// You must call this function and wait for ``EngineResponse/readyok``
-    /// before you can ask the engine to do any work.
+    /// before you can ask the engine to perform any work.
     ///
     /// - parameter coreCount: The number of processor cores to use for engine
     /// calculation. The default value is `nil` which uses the number of
@@ -122,10 +122,9 @@ public final class Engine: Sendable {
         messenger.stop()
             
             
+        await engineConfigurationActor.clearAsyncStream()
         await engineConfigurationActor.setIsRunning(isRunning: false)
-        await engineConfigurationActor
-            .setInitialSetupComplete(initialSetupComplete: false)
-        await engineConfigurationActor.streamContinuation?.finish()
+        await engineConfigurationActor.setInitialSetupComplete(initialSetupComplete: false)
     }
 
     /// Sends a command to the engine.
@@ -276,14 +275,12 @@ fileprivate actor EngineConfiguration: Sendable {
         }
     }
     
-    private func clearAsyncStream() async {
+    func clearAsyncStream() async {
         self.asyncStream = nil
+        self.streamContinuation = nil
     }
     
     private func setStreamContinuation(_ continuation: AsyncStream<EngineResponse>.Continuation?) async {
         self.streamContinuation = continuation
-        self.streamContinuation?.onTermination = { [weak self] _ in
-            Task{ await self?.clearAsyncStream() }
-        }
     }
 }
