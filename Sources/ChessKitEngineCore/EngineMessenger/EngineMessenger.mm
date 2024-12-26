@@ -14,6 +14,7 @@ NSPipe *_readPipe;
 NSPipe *_writePipe;
 NSFileHandle *_pipeReadHandle;
 NSFileHandle *_pipeWriteHandle;
+NSLock *_lock;
 
 /// Initializes a new `EngineMessenger` with default engine `Stockfish`.
 - (id)init {
@@ -24,6 +25,7 @@ NSFileHandle *_pipeWriteHandle;
     self = [super init];
 
     if (self) {
+        _lock = [[NSLock alloc] init];
         switch (type) {
             case EngineTypeStockfish:
                 _engine = new StockfishEngine();
@@ -43,6 +45,7 @@ NSFileHandle *_pipeWriteHandle;
 }
 
 - (void)start {
+    [_lock lock];
     // set up read pipe
     _readPipe = [NSPipe pipe];
     _pipeReadHandle = [_readPipe fileHandleForReading];
@@ -69,9 +72,11 @@ NSFileHandle *_pipeWriteHandle;
     dispatch_async(_queue, ^{
         _engine->initialize();
     });
+    [_lock unlock];
 }
 
 - (void)stop {
+    [_lock lock];
     [_pipeReadHandle closeFile];
     [_pipeWriteHandle closeFile];
 
@@ -82,6 +87,7 @@ NSFileHandle *_pipeWriteHandle;
     _pipeWriteHandle = NULL;
 
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_lock unlock];
 }
 
 - (void)sendCommand: (NSString*) command {

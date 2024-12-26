@@ -7,7 +7,7 @@
 
 public extension EngineResponse {
 
-    struct Info  {
+    struct Info: Sendable  {
         public var depth: Int?
         public var seldepth: Int?
         public var time: Int?
@@ -218,7 +218,7 @@ extension EngineResponse.Info: CustomStringConvertible {
 // MARK: - Score
 
 public extension EngineResponse.Info {
-    struct Score {
+    struct Score: Sendable {
         /// The score from the engine's point of view in centipawns.
         public var cp: Double?
         /// Mate in moves, not plies.
@@ -285,7 +285,7 @@ extension EngineResponse.Info.Score: Equatable {}
 // MARK: - CurrLine
 
 extension EngineResponse.Info {
-    public struct CurrLine {
+    public struct CurrLine: Sendable {
         var cpunr: Int?
         var moves: [String]
     }

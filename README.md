@@ -22,8 +22,8 @@ For a related Swift package that manages chess logic, see [chesskit-swift](https
 ## Usage
 
 1. Add `chesskit-engine` as a dependency
-	* in an [app built in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app),
-	* or [as a dependency to another Swift Package](https://www.swift.org/documentation/package-manager/#importing-dependencies).
+    * in an [app built in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app),
+    * or [as a dependency to another Swift Package](https://www.swift.org/documentation/package-manager/#importing-dependencies).
 
 2. Next, import `ChessKitEngine` to use it in Swift code:
 ``` swift
@@ -37,35 +37,33 @@ import ChessKitEngine
 
 ## Features
 
-* Initialize an engine and set response handler
+* Initialize an engine and set response stream
 ``` swift
 // create Stockfish engine
 let engine = Engine(type: .stockfish)
 
-// set response handler, called when engine issues responses
-engine.receiveResponse = { response in
+// set response stream, called when engine issues responses
+for await response in await engine.responseStream! {
     print(response)
 }
 
 // start listening for engine responses
-engine.start {
-    // engine is ready to go!
-}
+engine.start()
 ```
 
 * Send [UCI protocol](https://backscattering.de/chess/uci/2006-04.txt) commands
 ``` swift
 // check that engine is running before sending commands
-guard engine.isRunning else { return }
+guard await engine.isRunning else { return }
 
 // stop any current engine processing
-engine.send(command: .stop)
+await engine.send(command: .stop)
 
 // set engine position to standard starting chess position
-engine.send(command: .position(.startpos))
+await engine.send(command: .position(.startpos))
 
 // start engine analysis with maximum depth of 15
-engine.send(command: .go(depth: 15))
+await engine.send(command: .go(depth: 15))
 ```
 
 * Update engine position after a move is made
@@ -73,15 +71,15 @@ engine.send(command: .go(depth: 15))
 // FEN after 1. e4
 let newPosition = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
 
-engine.send(command: .stop)
-engine.send(command: .position(.fen(newPosition)))
-engine.send(command: .go(depth: 15))
+await engine.send(command: .stop)
+await engine.send(command: .position(.fen(newPosition)))
+await engine.send(command: .go(depth: 15))
 ```
 
 * Receive engine's analysis of current position
 ``` swift
-// receiveResponse is called whenever the engine publishes a response
-engine.receiveResponse = { response in
+// responseStream is called whenever the engine publishes a response
+for await response in await engine.responseStream! {
     switch response {
     case let .info(info):
         print(info.score)   // engine evaluation score in centipawns
@@ -90,18 +88,19 @@ engine.receiveResponse = { response in
         break
     }
 }
+
 ```
 
 * Terminate engine communication
 ``` swift
 // stop listening for engine responses
-engine.stop()
+await engine.stop()
 ```
 
 * Enable engine response logging
 ``` swift
 // log engine commands and responses to the console
-engine.loggingEnabled = true
+engine.setLoggingEnabled(true)
 
 // Logging is off by default since engines can be very
 // verbose while analyzing positions and returning evaluations.
@@ -116,11 +115,11 @@ They can be provided to the engine using the `.setoption(id:value:)` UCI command
 For example:
 ``` swift
 // Stockfish
-engine.send(command: .setoption(id: "EvalFile", value: fileURL))
-engine.send(command: .setoption(id: "EvalFileSmall", value: smallFileURL))
+await engine.send(command: .setoption(id: "EvalFile", value: fileURL))
+await engine.send(command: .setoption(id: "EvalFileSmall", value: smallFileURL))
 
 // Lc0
-engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
+await engine.send(command: .setoption(id: "WeightsFile", value: fileURL))
 ```
 
 The following details the recommended files for each engine and where to obtain them.
