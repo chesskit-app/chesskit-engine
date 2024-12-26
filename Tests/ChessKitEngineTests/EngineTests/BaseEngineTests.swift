@@ -24,7 +24,7 @@ import XCTest
 /// ```
 ///
 class BaseEngineTests: XCTestCase {
-
+    
     override class var defaultTestSuite: XCTestSuite {
         // Disable tests in base test case with empty XCTestSuite
         if self == BaseEngineTests.self {
@@ -33,22 +33,22 @@ class BaseEngineTests: XCTestCase {
             return super.defaultTestSuite
         }
     }
-
+    
     /// The engine type to test.
     var engineType: EngineType!
     var engine: Engine!
-
+    
     override func setUp() {
         super.setUp()
         engine = Engine(type: engineType)
     }
-
+    
     override func tearDown() async throws {
         await engine.stop()
         engine = nil
         try? await super.tearDown()
     }
-
+    
     func testEngineSetup() async {
         let expectation = self.expectation(
             description: "Expect engine \(engine.type.name) to start up."
@@ -62,9 +62,9 @@ class BaseEngineTests: XCTestCase {
         engine.start()
         
         Task{
-            for await response in await engine.responseChannel! {
+            for await response in await engine.responseStream! {
                 if case let .id(id) = response,
-                    case let .name(name) = id {
+                   case let .name(name) = id {
                     let version = engine.type.version
                     XCTAssertTrue(name.contains(version))
                 }
@@ -79,7 +79,7 @@ class BaseEngineTests: XCTestCase {
         }
         await fulfillment(of: [expectation], timeout: 5)
     }
-
+    
     func testEngineStop() async {
         let expectationStartEngine = self.expectation(
             description: "Expect engine \(engine.type.name) to start up."
@@ -95,9 +95,9 @@ class BaseEngineTests: XCTestCase {
         }
         
         engine.start()
-            
+        
         Task{
-            for await response in await engine.responseChannel! {
+            for await response in await engine.responseStream! {
                 let isRunning = await engine.isRunning
                 
                 if response == .readyok &&
@@ -110,17 +110,11 @@ class BaseEngineTests: XCTestCase {
             await engine.stop()
             
             if await !engine.isRunning,
-               await engine.responseChannel == nil {
+               await engine.responseStream == nil {
                 expectationStopEngine.fulfill()
             }
         }
         
         await fulfillment(of: [expectationStartEngine, expectationStopEngine], timeout: 5)
     }
-}
-
-
-@globalActor
-actor TestActor: GlobalActor {
-    public static var shared = TestActor()
 }

@@ -34,11 +34,11 @@ public final class Engine: Sendable {
         get async { await engineConfigurationActor.loggingEnabled }
     }
     
-    /// an AsyncChannel that is called when engine responses are received.
+    /// an AsyncStream that is called when engine responses are received.
     ///
     /// The underlying value ``EngineResponse`` contains the engine
     /// response corresponding to the UCI protocol.
-    public var responseChannel : AsyncStream<EngineResponse>? {
+    public var responseStream : AsyncStream<EngineResponse>? {
         get async { await engineConfigurationActor.asyncStream }
     }
     
@@ -134,7 +134,7 @@ public final class Engine: Sendable {
     /// Commands must be of type ``EngineCommand`` to ensure
     /// validity.
     ///
-    /// Any responses will be returned via ``responseChannel``.
+    /// Any responses will be returned via ``responseStream``.
     public func send(command: EngineCommand) async {
         guard await isRunning || [.uci, .isready].contains(command) else {
             await log("Engine is not running, call start() first.")
