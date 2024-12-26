@@ -37,13 +37,13 @@ import ChessKitEngine
 
 ## Features
 
-* Initialize an engine and set response handler
+* Initialize an engine and set response stream
 ``` swift
 // create Stockfish engine
 let engine = Engine(type: .stockfish)
 
-// set response handler, called when engine issues responses
-for await response in await engine.responseChannel! {
+// set response stream, called when engine issues responses
+for await response in await engine.responseStream! {
     print(response)
 }
 
