@@ -59,7 +59,13 @@ NSLock *_lock;
      object:_pipeReadHandle
     ];
 
-    [_pipeReadHandle readInBackgroundAndNotify];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //This has to run on a thread that has an active run loop
+        //otherwise we don't get notified when a read occurs.
+        //Since we are using async, the only active run loop we can
+        //guarentee to have an active run loop is the main thread.
+        [_pipeReadHandle readInBackgroundAndNotify];
+    });
 
     // set up write pipe
     _writePipe = [NSPipe pipe];
