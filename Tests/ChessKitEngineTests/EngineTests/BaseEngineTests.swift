@@ -36,12 +36,12 @@ class BaseEngineTests: XCTestCase {
     }
     
     /// The engine type to test.
-    nonisolated(unsafe) var engineType: EngineType!
-    nonisolated(unsafe) var engine: Engine!
+    var engineType: EngineType!
+    var engine: Engine!
     
     override func setUp() {
         super.setUp()
-        engine = Engine(type: engineType, loggingEnabled: true)
+        engine = Engine(type: engineType)
     }
     
     override func tearDown() async throws {
@@ -133,9 +133,10 @@ class BaseEngineTests: XCTestCase {
 
 //This actor's purpose is to ensure tests for the engine
 //class aren't running on main thread.
-//Since start function now uses MainActor.run which is virtually the
-//same thing as main thread to execute, testing on main thread is
-//counter productive.
+//Since [EngineMessenger start] function now uses
+//`dispatch_async(dispatch_get_main_queue, (), ^{...});`
+//which is the main thread to listen for read notifications,
+//testing on main thread is counter productive.
 @globalActor
 actor TestsActor: GlobalActor {
     static var shared = TestsActor()
