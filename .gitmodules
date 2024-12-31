@@ -1,6 +1,6 @@
 [submodule "Sources/ChessKitEngineCore/Engines/Stockfish"]
 	path = Sources/ChessKitEngineCore/Engines/Stockfish
-	url = https://github.com/chesskit-app/Stockfish.git
+url=https://github.com/Amir-Zucker/Stockfish.git
 [submodule "Sources/ChessKitEngineCore/Engines/lc0"]
 	path = Sources/ChessKitEngineCore/Engines/lc0
-	url = https://github.com/chesskit-app/lc0.git
+url=https://github.com/Amir-Zucker/lc0.git
