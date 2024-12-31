@@ -40,8 +40,8 @@ let package = Package(
                 .define("NNUE_EMBEDDING_OFF"),
                 .define("NO_PEXT"),
                 //arasan
-                .headerSearchPath("Engines/arasan-chess/src"),
-                .headerSearchPath("Engines/arasan-chess/src/nnue"),
+                .headerSearchPath("Engines/Arasan/src"),
+                .headerSearchPath("Engines/Arasan/src/nnue"),
                 .define("ARASAN_VERSION=v25.0"),
                 .define("_64BIT"),
                 .define("USE_INTRINSICS"),
@@ -63,7 +63,7 @@ let package = Package(
             ]
         )
     ],
-    cxxLanguageStandard: .gnucxx17
+    cxxLanguageStandard: .cxx20
 )
 
 // MARK: - ChessKitEngineCore excludes
@@ -113,7 +113,6 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     //Arasan
     "Engines/Arasan/src/arasanx.cpp",
     "Engines/Arasan/src/unit.cpp",
-    "Engines/Arasan/src/tuner.cpp",
     "Engines/Arasan/src/tune.cpp",
     "Engines/Arasan/src/topo.cpp",
     "Engines/Arasan/src/bitbase.cpp",

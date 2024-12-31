@@ -15,7 +15,6 @@ class ArasanEngine: public Engine {
 public:
     void initialize();
     void deinitialize();
-    void send_command(const std::string &cmd);
 };
 
 #endif /* arasan_engine_h */

@@ -34,7 +34,7 @@ void ArasanEngine::initialize() {
     Attacks::init();
     Scoring::init();
     Search::init();
-    if (!globals::initGlobals(true)) {
+    if (!globals::initGlobals()) {
         globals::cleanupGlobals();
         exit(-1);
     }
@@ -66,8 +66,4 @@ void ArasanEngine::initialize() {
 void ArasanEngine::deinitialize() {
     globals::cleanupGlobals();
     delete protocol;
-}
-
-void ArasanEngine::send_command(const std::string &cmd) {
-    protocol->do_command(cmd, board);
 }
