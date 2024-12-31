@@ -4,3 +4,6 @@ url=https://github.com/Amir-Zucker/Stockfish.git
 [submodule "Sources/ChessKitEngineCore/Engines/lc0"]
 	path = Sources/ChessKitEngineCore/Engines/lc0
 url=https://github.com/Amir-Zucker/lc0.git
+[submodule "Sources/ChessKitEngineCore/Engines/Arasan"]
+	path = Sources/ChessKitEngineCore/Engines/Arasan
+	url = git@github.com:Amir-Zucker/arasan-chess.git

@@ -33,11 +33,23 @@ let package = Package(
         .target(
             name: "ChessKitEngineCore",
             cxxSettings: [
+                //lc0
                 .headerSearchPath("Engines/lc0/"),
                 .headerSearchPath("Engines/lc0/src"),
                 .headerSearchPath("Engines/lc0/subprojects/eigen-3.4.0"),
                 .define("NNUE_EMBEDDING_OFF"),
-                .define("NO_PEXT")
+                .define("NO_PEXT"),
+                //arasan
+                .headerSearchPath("Engines/arasan-chess/src"),
+                .headerSearchPath("Engines/arasan-chess/src/nnue"),
+                .define("ARASAN_VERSION=v25.0"),
+                .define("_64BIT"),
+                .define("USE_INTRINSICS"),
+                .define("USE_ASM"),
+                .define("SYZYGY_TBS"),
+                .define("SMP"),
+                .define("SMP_STATS"),
+
             ],
             linkerSettings: [
                 .linkedLibrary("z")
@@ -97,5 +109,17 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/src/neural/opencl/",
     "Engines/lc0/src/neural/xla/",
     "Engines/lc0/src/rescorer/",
-    "Engines/lc0/src/rescorer_main.cc"
+    "Engines/lc0/src/rescorer_main.cc",
+    //Arasan
+    "Engines/Arasan/src/arasanx.cpp",
+    "Engines/Arasan/src/unit.cpp",
+    "Engines/Arasan/src/tuner.cpp",
+    "Engines/Arasan/src/tune.cpp",
+    "Engines/Arasan/src/topo.cpp",
+    "Engines/Arasan/src/bitbase.cpp",
+    "Engines/Arasan/src/util",
+    "Engines/Arasan/src/nnue/test",
+    "Engines/Arasan/src/syzygy/src/apps",
+    "Engines/Arasan/src/syzygy/src/tbchess.c",
+    "Engines/Arasan/src/nnueintf.cpp",
 ]

@@ -8,7 +8,8 @@
 
 typedef NS_ENUM(NSInteger, EngineType_objc) {
     EngineTypeStockfish,
-    EngineTypeLc0
+    EngineTypeLc0,
+    EngineTypeArasan,
 };
 
 #endif /* EngineType_objc_h */

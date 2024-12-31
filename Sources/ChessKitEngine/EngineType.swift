@@ -10,12 +10,14 @@ public enum EngineType: Int, Sendable {
 
     case stockfish
     case lc0
+    case arasan
 
     /// Internal mapping from Swift to Obj-C type.
     var objc: EngineType_objc {
         switch self {
         case .stockfish: .stockfish
         case .lc0:       .lc0
+        case .arasan:    .arasan
         }
     }
 
@@ -24,6 +26,7 @@ public enum EngineType: Int, Sendable {
         switch self {
         case .stockfish: "Stockfish"
         case .lc0:       "LeelaChessZero (Lc0)"
+        case .arasan:    "Arasan"
         }
     }
 
@@ -32,6 +35,7 @@ public enum EngineType: Int, Sendable {
         switch self {
         case .stockfish: "17"
         case .lc0:       "0.31.1"
+        case .arasan:    "25.0"
         }
     }
 
@@ -54,6 +58,14 @@ public enum EngineType: Int, Sendable {
                 Bundle.main.url(forResource: $0, withExtension: nil)?.path()
             }
 
+            return fileOptions.map(EngineCommand.setoption)
+        case .arasan:
+            let fileOptions = [
+                "BookPath": "book.bin"
+                ].compactMapValues {
+                    Bundle.main.url(forResource: $0, withExtension: "bin")?.path()
+            }
+            
             return fileOptions.map(EngineCommand.setoption)
         }
     }
