@@ -59,7 +59,8 @@ let package = Package(
             name: "ChessKitEngineTests",
             dependencies: ["ChessKitEngine"],
             resources: [
-                .copy("EngineTests/Resources/192x15_network")
+                .copy("EngineTests/Resources/192x15_network"),
+                .copy("EngineTests/Resources/book.bin")
             ]
         )
     ],
@@ -111,18 +112,11 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/src/rescorer/",
     "Engines/lc0/src/rescorer_main.cc",
     //Arasan
-    "Engines/Arasan/src/arasanx.cpp",
-//    "Engines/Arasan/src/unit.cpp",
+    "Engines/Arasan/src/unit.cpp",
     "Engines/Arasan/src/tune.cpp",
     "Engines/Arasan/src/topo.cpp",
-    "Engines/Arasan/src/bitbase.cpp",
     "Engines/Arasan/src/util",
-    "Engines/Arasan/tests",
-    "Engines/Arasan/tools",
-    "Engines/Arasan/prj",
+    "Engines/Arasan/src/nnue",
     "Engines/Arasan/src/nnue/test",
-    "Engines/Arasan/src/syzygy",
-    "Engines/Arasan/src/syzygy.h",
-    "Engines/Arasan/src/syzygy.cpp",
-//    "Engines/Arasan/src/nnueintf.cpp",
+    "Engines/Arasan/src/bitbase.cpp",
 ]
