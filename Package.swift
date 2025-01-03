@@ -63,7 +63,7 @@ let package = Package(
             ]
         )
     ],
-    cxxLanguageStandard: .cxx20
+    cxxLanguageStandard: .gnucxx17
 )
 
 // MARK: - ChessKitEngineCore excludes
@@ -112,13 +112,17 @@ package.targets.first { $0.name == "ChessKitEngineCore" }?.exclude = [
     "Engines/lc0/src/rescorer_main.cc",
     //Arasan
     "Engines/Arasan/src/arasanx.cpp",
-    "Engines/Arasan/src/unit.cpp",
+//    "Engines/Arasan/src/unit.cpp",
     "Engines/Arasan/src/tune.cpp",
     "Engines/Arasan/src/topo.cpp",
     "Engines/Arasan/src/bitbase.cpp",
     "Engines/Arasan/src/util",
+    "Engines/Arasan/tests",
+    "Engines/Arasan/tools",
+    "Engines/Arasan/prj",
     "Engines/Arasan/src/nnue/test",
-    "Engines/Arasan/src/syzygy/src/apps",
-    "Engines/Arasan/src/syzygy/src/tbchess.c",
-    "Engines/Arasan/src/nnueintf.cpp",
+    "Engines/Arasan/src/syzygy",
+    "Engines/Arasan/src/syzygy.h",
+    "Engines/Arasan/src/syzygy.cpp",
+//    "Engines/Arasan/src/nnueintf.cpp",
 ]
