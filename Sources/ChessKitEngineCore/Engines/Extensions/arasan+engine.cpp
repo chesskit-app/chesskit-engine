@@ -15,7 +15,6 @@
 #include <fstream>
 
 Protocol *protocol;
-Board board;
 
 void ArasanEngine::initialize() {
     signal(SIGINT,SIG_IGN);
@@ -27,7 +26,7 @@ void ArasanEngine::initialize() {
     setbuf(stdout, NULL);
     std::cout.rdbuf()->pubsetbuf(NULL, 0);
     std::cin.rdbuf()->pubsetbuf(NULL, 0);
-
+    
     Bitboard::init();
     Board::init();
     globals::initOptions();
@@ -57,7 +56,8 @@ void ArasanEngine::initialize() {
     }
 
     bool ics = true, trace = false, cpusSet = false, memorySet = false;
-
+    
+    Board board;
     protocol = new Protocol(board, trace, ics, cpusSet, memorySet);
     // Begins protocol (UCI) run loop, listening on standard input
     // protocol->poll(globals::polling_terminated);
