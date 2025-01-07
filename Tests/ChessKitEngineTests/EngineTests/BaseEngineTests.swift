@@ -23,7 +23,7 @@ import XCTest
 /// }
 /// ```
 ///
-//@TestsActor
+@TestsActor
 class BaseEngineTests: XCTestCase {
     
     override class var defaultTestSuite: XCTestSuite {
@@ -36,8 +36,8 @@ class BaseEngineTests: XCTestCase {
     }
     
     /// The engine type to test.
-    var engineType: EngineType!
-    var engine: Engine!
+    nonisolated(unsafe) var engineType: EngineType!
+    nonisolated(unsafe) var engine: Engine!
     
     override func setUp() {
         super.setUp()
