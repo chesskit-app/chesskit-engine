@@ -60,7 +60,7 @@ void ArasanEngine::initialize() {
     Board board;
     protocol = new Protocol(board, trace, ics, cpusSet, memorySet);
     // Begins protocol (UCI) run loop, listening on standard input
-    // protocol->poll(globals::polling_terminated);
+     protocol->poll(globals::polling_terminated);
 }
 
 void ArasanEngine::deinitialize() {
