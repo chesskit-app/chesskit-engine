@@ -48,7 +48,7 @@ search.hash_table_size=64M
 search.ncpus=1
 #
 # True to enable use of tablebases, false to disable
-search.use_tablebases=false
+# search.use_tablebases=false
 #
 # Tablebase location. By default, this option is not set and 
 # the tablebases are assumed to be in a "syzygy" directory
