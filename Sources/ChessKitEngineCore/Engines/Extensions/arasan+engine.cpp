@@ -97,7 +97,7 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
         std::string temp = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);
         std::string replace = "file:///";
         
-        sourceFile =  temp.replace(0, replace.size(), replace);
+        sourceFile =  temp.replace(0, replace.size(), "file://");
     }
     
     auto target = targetFolder / sourceFile.filename();
