@@ -94,16 +94,17 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
         CFBundleRef mainBundle = CFBundleGetMainBundle();
         CFURLRef fileUrlRef = CFBundleCopyResourceURL(mainBundle, fileName, fileExtenstion, NULL);
         CFStringRef fileStringRef = CFURLGetString(fileUrlRef);
-        sourceFile = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);;
+        std::string temp = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);
+        sourceFile = "file:/" + temp;
     }
     
-    auto target = targetFolder / sourceFile.filename(); // sourceFile.filename() returns "sourceFile.ext".
+    auto target = targetFolder / sourceFile.filename();
 
     try
     {
         std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
     }
-    catch (std::exception& e) // Not using fs::filesystem_error since std::bad_alloc can throw too.
+    catch (std::exception& e)
     {
         std::cout << e.what();
     }
