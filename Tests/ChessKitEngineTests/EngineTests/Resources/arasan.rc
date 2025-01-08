@@ -59,4 +59,4 @@ search.ncpus=1
 # relative to the executable location. There is normally
 # no need to set this: Arasan executables are compiled
 # with a suitable default network name.
-search.nnueFile=arasanv3-20241109.nnue
+search.nnueFile=arasan.nnue

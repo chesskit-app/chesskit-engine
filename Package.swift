@@ -61,7 +61,8 @@ let package = Package(
             resources: [
                 .copy("EngineTests/Resources/192x15_network"),
                 .copy("EngineTests/Resources/book.bin"),
-                .copy("EngineTests/Resources/arasanv3-20241109.nnue")
+                .copy("EngineTests/Resources/arasan.nnue"),
+                .copy("EngineTests/Resources/arasan.rc")
             ]
         )
     ],

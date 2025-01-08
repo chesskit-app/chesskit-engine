@@ -9,12 +9,17 @@
 
 #import "engine.h"
 #import <string>
+#include <CoreFoundation/CoreFoundation.h>
 
 /// Arasan implementation of `Engine`.
 class ArasanEngine: public Engine {
 public:
     void initialize();
     void deinitialize();
+    
+private:
+    void copyBundleFiles();
+    void copyBundleFile(CFStringRef fileName, CFStringRef fileExtenstion);
 };
 
 #endif /* arasan_engine_h */

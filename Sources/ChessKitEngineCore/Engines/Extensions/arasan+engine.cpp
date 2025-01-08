@@ -27,6 +27,8 @@ void ArasanEngine::initialize() {
     std::cout.rdbuf()->pubsetbuf(NULL, 0);
     std::cin.rdbuf()->pubsetbuf(NULL, 0);
     
+    copyBundleFiles();
+    
     Bitboard::init();
     Board::init();
     globals::initOptions();
@@ -69,3 +71,42 @@ void ArasanEngine::deinitialize() {
     globals::polling_terminated = true;
     globals::cleanupGlobals();
 }
+
+void ArasanEngine::copyBundleFiles() {
+    copyBundleFile(CFSTR("arasan"), CFSTR("nnue"));
+    copyBundleFile(CFSTR("arasan"), CFSTR("rc"));
+    copyBundleFile(CFSTR("book"), CFSTR("bin"));
+}
+
+void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtenstion) {
+    std::string cFileName = CFStringGetCStringPtr(fileName, kCFStringEncodingUTF8);
+    std::string cFileExtension = CFStringGetCStringPtr(fileExtenstion, kCFStringEncodingUTF8);
+    std::filesystem::path targetFolder = getenv("HOME");
+    std::filesystem::path sourceFile;
+    
+    //Check if we are running on xctests env therefore mainBundle is com.apple.dt.xctest.tool not our
+    if (getenv("XCTestBundlePath") != nullptr) {
+        std::string env = getenv("XCTestBundlePath");
+        
+        sourceFile = env + "/ChessKitEngine_ChessKitEngineTests.bundle/" + cFileName + "." + cFileExtension;
+    }
+    else {
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        CFURLRef fileUrlRef = CFBundleCopyResourceURL(mainBundle, fileName, fileExtenstion, NULL);
+        CFStringRef fileStringRef = CFURLGetString(fileUrlRef);
+        sourceFile = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);;
+    }
+    
+    auto target = targetFolder / sourceFile.filename(); // sourceFile.filename() returns "sourceFile.ext".
+
+    try
+    {
+        std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
+    }
+    catch (std::exception& e) // Not using fs::filesystem_error since std::bad_alloc can throw too.
+    {
+        std::cout << e.what();
+    }
+}
+
+
