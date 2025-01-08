@@ -38,22 +38,22 @@ void ArasanEngine::initialize() {
         exit(-1);
     }
 
-    struct rlimit rl;
-    const rlim_t STACK_MAX = static_cast<rlim_t>(globals::LINUX_STACK_SIZE);
-    auto result = getrlimit(RLIMIT_STACK, &rl);
-    if (result == 0)
-    {
-        if (rl.rlim_cur < STACK_MAX)
-        {
-            rl.rlim_cur = STACK_MAX;
-            result = setrlimit(RLIMIT_STACK, &rl);
-            if (result)
-            {
-                std::cerr << "failed to increase stack size" << std::endl;
-                exit(-1);
-            }
-        }
-    }
+//    struct rlimit rl;
+//    const rlim_t STACK_MAX = static_cast<rlim_t>(globals::LINUX_STACK_SIZE);
+//    auto result = getrlimit(RLIMIT_STACK, &rl);
+//    if (result == 0)
+//    {
+//        if (rl.rlim_cur < STACK_MAX)
+//        {
+//            rl.rlim_cur = STACK_MAX;
+//            result = setrlimit(RLIMIT_STACK, &rl);
+//            if (result)
+//            {
+//                std::cerr << "failed to increase stack size" << std::endl;
+//                exit(-1);
+//            }
+//        }
+//    }
 
     bool ics = true, trace = false, cpusSet = false, memorySet = false;
     
