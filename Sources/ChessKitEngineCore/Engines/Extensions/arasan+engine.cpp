@@ -94,11 +94,14 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
     } else {
         CFBundleRef mainBundle = CFBundleGetMainBundle();
         CFURLRef fileUrlRef = CFBundleCopyResourceURL(mainBundle, fileName, fileExtenstion, NULL);
-        CFStringRef fileStringRef = CFURLGetString(fileUrlRef);
-        std::string temp = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);
-        std::string replace = "file://";
         
-        sourceFile =  temp.replace(0, replace.size(), "");
+        if (fileUrlRef != nullptr) {
+            CFStringRef fileStringRef = CFURLGetString(fileUrlRef);
+            std::string temp = CFStringGetCStringPtr(fileStringRef, kCFStringEncodingUTF8);
+            std::string replace = "file://";
+            
+            sourceFile =  temp.replace(0, replace.size(), "");
+        }
     }
     
     if (!sourceFile.empty()) {
