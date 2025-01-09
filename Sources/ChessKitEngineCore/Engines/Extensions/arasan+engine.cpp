@@ -19,7 +19,7 @@ Protocol *protocol;
 void ArasanEngine::initialize() {
     signal(SIGINT,SIG_IGN);
 
-    // Show a message on the console
+    //print arasan data to console.
     std::cout << "Arasan " Arasan_Version << ' ' << Arasan_Copyright << std::endl;
     // Must use unbuffered console
     setbuf(stdin,NULL);
@@ -36,33 +36,35 @@ void ArasanEngine::initialize() {
     Scoring::init();
     Search::init();
     if (!globals::initGlobals()) {
-        globals::cleanupGlobals();
-        exit(-1);
+        std::cerr << "failed to init arasan chess engine" << std::endl;
+        deinitialize();
+        return;
     }
 
-//    struct rlimit rl;
-//    const rlim_t STACK_MAX = static_cast<rlim_t>(globals::LINUX_STACK_SIZE);
-//    auto result = getrlimit(RLIMIT_STACK, &rl);
-//    if (result == 0)
-//    {
-//        if (rl.rlim_cur < STACK_MAX)
-//        {
-//            rl.rlim_cur = STACK_MAX;
-//            result = setrlimit(RLIMIT_STACK, &rl);
-//            if (result)
-//            {
-//                std::cerr << "failed to increase stack size" << std::endl;
-//                exit(-1);
-//            }
-//        }
-//    }
+    struct rlimit rl;
+    const rlim_t STACK_MAX = static_cast<rlim_t>(globals::LINUX_STACK_SIZE);
+    auto result = getrlimit(RLIMIT_STACK, &rl);
+    if (result == 0)
+    {
+        if (rl.rlim_cur < STACK_MAX && rl.rlim_max <= STACK_MAX)
+        {
+            rl.rlim_cur = STACK_MAX;
+            result = setrlimit(RLIMIT_STACK, &rl);
+            if (result)
+            {
+                std::cerr << "failed to increase stack size" << std::endl;
+                deinitialize();
+                return;
+            }
+        }
+    }
 
     bool ics = true, trace = false, cpusSet = false, memorySet = false;
     
     Board board;
     protocol = new Protocol(board, trace, ics, cpusSet, memorySet);
     // Begins protocol (UCI) run loop, listening on standard input
-     protocol->poll(globals::polling_terminated);
+    protocol->poll(globals::polling_terminated);
     
     delete protocol;
 }
@@ -84,13 +86,12 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
     std::filesystem::path targetFolder = getenv("HOME");
     std::filesystem::path sourceFile;
     
-    //Check if we are running on xctests env therefore mainBundle is com.apple.dt.xctest.tool not our
+    //Check if we are running on xctests env therefore mainBundle is com.apple.dt.xctest.tool which does not contain our resource bundle.
     if (getenv("XCTestBundlePath") != nullptr) {
         std::string env = getenv("XCTestBundlePath");
         
         sourceFile = env + "/ChessKitEngine_ChessKitEngineTests.bundle/" + cFileName + "." + cFileExtension;
-    }
-    else {
+    } else {
         CFBundleRef mainBundle = CFBundleGetMainBundle();
         CFURLRef fileUrlRef = CFBundleCopyResourceURL(mainBundle, fileName, fileExtenstion, NULL);
         CFStringRef fileStringRef = CFURLGetString(fileUrlRef);
@@ -100,15 +101,17 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
         sourceFile =  temp.replace(0, replace.size(), "");
     }
     
-    auto target = targetFolder / sourceFile.filename();
-
-    try
-    {
-        std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
-    }
-    catch (std::exception& e)
-    {
-        std::cout << e.what();
+    if (!sourceFile.empty()) {
+        auto target = targetFolder / sourceFile.filename();
+        
+        try
+        {
+            std::filesystem::copy_file(sourceFile, target, std::filesystem::copy_options::overwrite_existing);
+        }
+        catch (std::exception& e)
+        {
+            std::cout << e.what();
+        }
     }
 }
 
