@@ -64,6 +64,7 @@ void ArasanEngine::initialize() {
     Board board;
     protocol = new Protocol(board, trace, ics, cpusSet, memorySet);
     // Begins protocol (UCI) run loop, listening on standard input
+    // This loop continues until globals::polling_terminated is set to true. 
     protocol->poll(globals::polling_terminated);
     
     delete protocol;
@@ -74,6 +75,7 @@ void ArasanEngine::deinitialize() {
     globals::cleanupGlobals();
 }
 
+//Copy the nnue, rc (config) and openning book from the resource bundle.
 void ArasanEngine::copyBundleFiles() {
     copyBundleFile(CFSTR("arasan"), CFSTR("nnue"));
     copyBundleFile(CFSTR("arasan"), CFSTR("rc"));
@@ -93,7 +95,6 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
         std::string bundlePath;
         
         for (const auto & entry : std::filesystem::directory_iterator(env)) {
-            std::cout << entry.path() << std::endl;
             if (entry.path().extension() == ".bundle") {
                 sourceFile = entry.path().string() + "/" + cFileName + "." + cFileExtension;
             }
