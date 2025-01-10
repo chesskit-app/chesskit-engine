@@ -80,6 +80,7 @@ void ArasanEngine::copyBundleFiles() {
     copyBundleFile(CFSTR("book"), CFSTR("bin"));
 }
 
+//Copy the file to the HOME directory for arasan to find them.
 void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtenstion) {
     std::string cFileName = CFStringGetCStringPtr(fileName, kCFStringEncodingUTF8);
     std::string cFileExtension = CFStringGetCStringPtr(fileExtenstion, kCFStringEncodingUTF8);
@@ -89,8 +90,14 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
     //Check if we are running on xctests env therefore mainBundle is com.apple.dt.xctest.tool which does not contain our resource bundle.
     if (getenv("XCTestBundlePath") != nullptr) {
         std::string env = getenv("XCTestBundlePath");
+        std::string bundlePath;
         
-        sourceFile = env + "/ChessKitEngine_ChessKitEngineTests.bundle/" + cFileName + "." + cFileExtension;
+        for (const auto & entry : std::filesystem::directory_iterator(env)) {
+            std::cout << entry.path() << std::endl;
+            if (entry.path().extension() == ".bundle") {
+                sourceFile = entry.path().string() + "/" + cFileName + "." + cFileExtension;
+            }
+        }
     } else {
         CFBundleRef mainBundle = CFBundleGetMainBundle();
         CFURLRef fileUrlRef = CFBundleCopyResourceURL(mainBundle, fileName, fileExtenstion, NULL);
@@ -101,6 +108,9 @@ void ArasanEngine::copyBundleFile(CFStringRef fileName, CFStringRef fileExtensti
             std::string replace = "file://";
             
             sourceFile =  temp.replace(0, replace.size(), "");
+            
+            CFRelease(fileUrlRef);
+            CFRelease(fileStringRef);
         }
     }
     
