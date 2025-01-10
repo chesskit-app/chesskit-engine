@@ -33,30 +33,17 @@ search.resign_threshold=-500
 #
 # Hash table size in bytes (can be overridden with -H)
 # Can use: K for kilobytes, M for megabytes, G for gigabytes.
-# Note: for Winboard can use the /defaultHashSize option or common
-# engine options to set. But command-line switches to Arasan take
-# precedence over Winboard settings. In UCI mode, this is commonly
-# set from the GUI.
 search.hash_table_size=64M
 #
 # Max threads to use during search
 # Can be overridden with -c command-line option.
-# Note: for Winboard can use the /smpCores option or common
-# engine options to set. But command-line switches to Arasan take
-# precedence over Winboard settings. In UCI mode, this is commonly
-# set from the GUI.
 search.ncpus=1
 #
-# True to enable use of tablebases, false to disable
-# search.use_tablebases=false
-#
-# Tablebase location. By default, this option is not set and 
-# the tablebases are assumed to be in a "syzygy" directory
-# under the directory where Arasan is installed.
-#search.syzygy_path=/home/jdart/chess/syzygy
-#
 # Location of the NNUE network file. If no path, this is
-# relative to the executable location. There is normally
-# no need to set this: Arasan executables are compiled
-# with a suitable default network name.
+# relative to the HOME environment variable
+# NOTE: if you are using this framework as a submodule of
+# Async-Chesskit-Engine, do not change this parameter,
+# the framework uses that name to copy the nnue file
+# from the app bundle to the HOME environment variable
+# path where the engine can find it.
 search.nnueFile=arasan.nnue
