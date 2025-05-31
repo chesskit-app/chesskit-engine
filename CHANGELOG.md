@@ -2,7 +2,7 @@
 Released Friday, May 30, 2025.
 
 ### Breaking Changes
-* `ChessKitEngine` now supports Swift 6 concurrency.
+* `ChessKitEngine` now supports Swift 6 concurrency (by [@Amir-Zucker](https://github.com/Amir-Zucker)).
   * Starting and stopping engine, as well as sending commands must now be done using `async`/`await`.
 
 # ChessKitEngine 0.5.0
