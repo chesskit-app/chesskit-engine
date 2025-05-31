@@ -5,7 +5,6 @@
 
 /// Possible engine commands based on the
 /// [Universal Chess Interface (UCI)](https://backscattering.de/chess/uci/2006-04.txt).
-///
 public enum EngineCommand: Equatable, Sendable {
     
     /// `"debug [ on | off ]"`
@@ -166,7 +165,7 @@ public enum EngineCommand: Equatable, Sendable {
         }
     }
     
-    internal static func nextSetupLoopCommand(given response: EngineResponse?) -> EngineCommand? {
+    static func nextSetupLoopCommand(given response: EngineResponse?) -> EngineCommand? {
         // engine setup loop
         // <uci> → <uciok> → <isready> → <readok> → complete
 

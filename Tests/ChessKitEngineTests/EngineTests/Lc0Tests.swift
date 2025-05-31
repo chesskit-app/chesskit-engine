@@ -28,11 +28,13 @@ final class Lc0Tests: BaseEngineTests {
         
         await startEngine(expectation: expectationStartEngine)
         await stopEngine(expectation: expectationStopEngine)
-        //LC0 has an internal mutex failure "Unhandled exception: mutex lock failed: Invalid argument"
-        //when trying to stop and start the engine too fast.
-        //Adding this 100 ms delay circumvent that issue.
-        //Once this issue is resolved, this override func
-        //can be removed and use the EngineRestart test on BeseEngineTests
+
+        // lc0 has an internal mutex failure "Unhandled exception: mutex lock failed: Invalid argument"
+        // when trying to stop and start the engine too fast.
+        // This 100 ms delay circumvents the issue.
+        //
+        // Once this issue is resolved, this function
+        // can be removed, using `BaseEngineTests.testEngineRestart()` instead.
         try? await Task.sleep(for: .milliseconds(100))
         await startEngine(expectation: expectationStartEngine)
         

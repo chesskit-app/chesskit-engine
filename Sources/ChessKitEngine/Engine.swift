@@ -7,8 +7,8 @@ import ChessKitEngineCore
 
 public final class Engine: Sendable {
     
-    //MARK: - Public properties
-    
+    // MARK: - Public properties
+
     /// The type of the engine.
     public let type: EngineType
 
@@ -41,9 +41,9 @@ public final class Engine: Sendable {
         get async { await engineConfigurationActor.asyncStream }
     }
     
-    //MARK: - Private properties
-    
-    ///Actor used to hold mutating data in a thread safe environment.
+    // MARK: - Private properties
+
+    /// Actor used to hold mutating data in a thread safe environment.
     private let engineConfigurationActor: EngineConfiguration
     
     /// Messenger used to communicate with engine.
@@ -54,8 +54,8 @@ public final class Engine: Sendable {
         qos: .userInteractive
     )
         
-    //MARK: - Life cycle functions
-    
+    // MARK: - Life cycle
+
     /// Initializes an engine with the provided ``EngineType`` and optional logging enabled flag.
     ///
     /// - parameter type: The type of engine to use.
@@ -69,14 +69,14 @@ public final class Engine: Sendable {
 
 
     // This no longer work in an async environment as stop function outlives the deinit function.
-    // Support for async deinit should be added in a future version of Swift (6.1)
+    // Support for async deinit should be added in a future version of Swift (6.2)
     // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0371-isolated-synchronous-deinit.md
     //    deinit {
     //        stop()
     //    }
 
-    //MARK: - Public functions
-    
+    // MARK: - Public functions
+
     /// Starts the engine.
     ///
     /// You must call this function and wait for ``EngineResponse/readyok``
@@ -92,7 +92,7 @@ public final class Engine: Sendable {
         coreCount: Int? = nil,
         multipv: Int = 1
     ) async {
-        //Setup async stream response if not already set.
+        // Setup async stream response if not already set.
         await engineConfigurationActor.setAsyncStream()
         
         setMessengerResponseHandler(coreCount: coreCount, multipv: multipv)
@@ -222,12 +222,11 @@ public final class Engine: Sendable {
 
 }
 
-//MARK: EngineConfiguration actor
+// MARK: - EngineConfiguration actor
 
-//An actor to hold the configuration for the engine class.
-//Since engine now conforms to sendable protocol, we need to
-//move the mutable data into async safe environment.
-//
+/// An actor to hold the configuration for the engine class.
+/// Since `Engine` conforms to `Sendable` protocol, we need to
+/// move the mutable data into async safe environment.
 fileprivate actor EngineConfiguration: Sendable {
     /// Whether the engine is currently running.
     private(set) var isRunning = false
@@ -263,16 +262,16 @@ fileprivate actor EngineConfiguration: Sendable {
     }
     
     func setAsyncStream() async {
-        guard self.asyncStream == nil else { return }
+        guard asyncStream == nil else { return }
         
-        self.asyncStream = AsyncStream { (continuation: AsyncStream<EngineResponse>.Continuation) -> Void in
+        asyncStream = AsyncStream { (continuation: AsyncStream<EngineResponse>.Continuation) -> Void in
             Task{ await setStreamContinuation(continuation) }
         }
     }
     
     func clearAsyncStream() async {
-        self.asyncStream = nil
-        self.streamContinuation = nil
+        asyncStream = nil
+        streamContinuation = nil
     }
     
     private func setStreamContinuation(_ continuation: AsyncStream<EngineResponse>.Continuation?) async {

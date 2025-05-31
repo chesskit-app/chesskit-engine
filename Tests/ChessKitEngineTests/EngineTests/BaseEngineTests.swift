@@ -22,7 +22,6 @@ import XCTest
 ///
 /// }
 /// ```
-///
 @TestsActor
 class BaseEngineTests: XCTestCase {
     
@@ -58,7 +57,6 @@ class BaseEngineTests: XCTestCase {
         )
         
         await startEngine(expectation: expectation)
-        
         await fulfillment(of: [expectation], timeout: 5)
     }
     
@@ -74,9 +72,7 @@ class BaseEngineTests: XCTestCase {
         )
         
         await startEngine(expectation: expectationStartEngine)
-        
         await stopEngine(expectation: expectationStopEngine)
-        
         await fulfillment(of: [expectationStartEngine, expectationStopEngine], timeout: 5)
     }
     
@@ -96,12 +92,11 @@ class BaseEngineTests: XCTestCase {
         await startEngine(expectation: expectationStartEngine)
         await stopEngine(expectation: expectationStopEngine)
         await startEngine(expectation: expectationStartEngine)
-        
         await fulfillment(of: [expectationStartEngine, expectationStopEngine], timeout: 5)
     }
     
     
-    internal func stopEngine(expectation: XCTestExpectation) async {
+    func stopEngine(expectation: XCTestExpectation) async {
         await engine.stop()
         
         if await !engine.isRunning,
@@ -110,7 +105,7 @@ class BaseEngineTests: XCTestCase {
         }
     }
     
-    internal func startEngine(expectation: XCTestExpectation) async {
+    func startEngine(expectation: XCTestExpectation) async {
         await engine.start()
         
         for await response in await engine.responseStream! {
@@ -131,12 +126,12 @@ class BaseEngineTests: XCTestCase {
     }
 }
 
-//This actor's purpose is to ensure tests for the engine
-//class aren't running on main thread.
-//Since [EngineMessenger start] function now uses
-//`dispatch_async(dispatch_get_main_queue, (), ^{...});`
-//which is the main thread to listen for read notifications,
-//testing on main thread is counter productive.
+/// Ensures tests for the `Engine` class don't run on main thread.
+///
+/// Since `[EngineMessenger start]` function now uses
+/// `dispatch_async(dispatch_get_main_queue, (), ^{...});`
+/// which is the main thread to listen for read notifications,
+/// testing on main thread is counter productive.
 @globalActor
 actor TestsActor: GlobalActor {
     static var shared = TestsActor()
