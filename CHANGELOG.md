@@ -1,4 +1,5 @@
-# [unreleased]
+# ChessKitEngine 0.6.0
+Released Friday, May 30, 2025.
 
 ### Breaking Changes
 * `ChessKitEngine` now supports Swift 6 concurrency.
