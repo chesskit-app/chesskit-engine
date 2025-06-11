@@ -1,3 +1,10 @@
+# [unreleased]
+
+### Improvements
+* Commands and responses are now logged using their own synchronous queue to prevent unreadable output when commands and responses were sent simultaneously.
+* `setLoggingEnabled(loggingEnabled:)` has been renamed `set(loggingEnabled:)`
+  * The original function remains but is deprecated.
+
 # ChessKitEngine 0.6.0
 Released Friday, May 30, 2025.
 

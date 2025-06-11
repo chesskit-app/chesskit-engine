@@ -73,7 +73,7 @@ NSLock *_lock;
     dup2([[_writePipe fileHandleForReading] fileDescriptor], fileno(stdin));
 
     // create command dispatch queue and start engine
-    _queue = dispatch_queue_create("ck-message-queue", DISPATCH_QUEUE_CONCURRENT);
+    _queue = dispatch_queue_create("ck-engine-response-queue", DISPATCH_QUEUE_CONCURRENT);
 
     dispatch_async(_queue, ^{
         _engine->initialize();
