@@ -16,17 +16,17 @@
 /// `stdout` output.
 class Engine {
 public:
-    /// Initializes the engine.
-    ///
-    /// Any required initialization and setup should
-    /// be performed here.
-    virtual void initialize() {};
-    
-    /// Deinitializes the engine.
-    ///
-    /// Any required deinitialization and cleanup should
-    /// be performed here
-    virtual void deinitialize() {};
+  /// Initializes the engine.
+  ///
+  /// Any required initialization and setup should
+  /// be performed here.
+  virtual void initialize() {};
+
+  /// Deinitializes the engine.
+  ///
+  /// Any required deinitialization and cleanup should
+  /// be performed here
+  virtual void deinitialize() {};
 };
 
 #endif /* engine_h */

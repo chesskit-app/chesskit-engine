@@ -1,5 +1,5 @@
 //
-//  lc0+engine.m
+//  lc0+engine.cpp
 //  ChessKitEngine
 //
 
@@ -12,8 +12,8 @@
 /// LeelaChessZero (Lc0) implementation of `Engine`.
 class Lc0Engine: public Engine {
 public:
-    void initialize();
-    void deinitialize();
+  void initialize();
+  void deinitialize();
 };
 
 #endif /* lc0_engine_h */

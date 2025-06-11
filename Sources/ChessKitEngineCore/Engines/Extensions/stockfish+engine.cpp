@@ -1,5 +1,5 @@
 //
-//  stockfish+engine.m
+//  stockfish+engine.cpp
 //  ChessKitEngine
 //
 
@@ -10,11 +10,11 @@
 using namespace Stockfish;
 
 void StockfishEngine::initialize() {
-    char empty[] = "";
-    char* argv[] = { empty };
-    _main(1, argv);
+  char empty[] = "";
+  char* argv[] = { empty };
+  _main(1, argv);
 }
 
 void StockfishEngine::deinitialize() {
-    ThreadPool().end();
+  ThreadPool().end();
 }

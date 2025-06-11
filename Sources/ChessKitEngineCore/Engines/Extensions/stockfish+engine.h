@@ -12,8 +12,8 @@
 /// Stockfish implementation of `Engine`.
 class StockfishEngine: public Engine {
 public:
-    void initialize();
-    void deinitialize();
+  void initialize();
+  void deinitialize();
 };
 
 #endif /* stockfish_engine_h */

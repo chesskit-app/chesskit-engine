@@ -17,7 +17,7 @@
 #endif
 
 + (void)print:(NSString *)message {
-    DLog(@"%@", message)
+  DLog(@"%@", message)
 }
 
 @end
