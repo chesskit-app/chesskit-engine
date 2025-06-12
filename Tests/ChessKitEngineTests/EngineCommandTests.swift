@@ -3,71 +3,62 @@
 //  ChessKitEngineTests
 //
 
-import XCTest
 @testable import ChessKitEngine
+import Testing
 
-class EngineCommandTests: XCTestCase {
+struct EngineCommandTests {
 
-  func testDebugCommand() {
+  @Test func debugCommand() {
     let debugOn = EngineCommand.debug(on: true)
-    XCTAssertEqual(debugOn.rawValue, "debug on")
+    #expect(debugOn.rawValue == "debug on")
 
     let debugOff = EngineCommand.debug(on: false)
-    XCTAssertEqual(debugOff.rawValue, "debug off")
+    #expect(debugOff.rawValue == "debug off")
   }
 
-  func testUciCommand() {
-    XCTAssertEqual(EngineCommand.uci.rawValue, "uci")
+  @Test func uciCommand() {
+    #expect(EngineCommand.uci.rawValue == "uci")
   }
 
-  func testIsReadyCommand() {
-    XCTAssertEqual(EngineCommand.isready.rawValue, "isready")
+  @Test func isReadyCommand() {
+    #expect(EngineCommand.isready.rawValue == "isready")
   }
 
-  func testSetOptionCommand() {
+  @Test func setOptionCommand() {
     let setOption1 = EngineCommand.setoption(id: "name", value: "val")
-    XCTAssertEqual(
-      setOption1.rawValue,
-      "setoption name name value val"
-    )
+    #expect(setOption1.rawValue == "setoption name name value val")
 
     let setOption2 = EngineCommand.setoption(id: "name")
-    XCTAssertEqual(
-      setOption2.rawValue,
-      "setoption name name"
-    )
+    #expect(setOption2.rawValue == "setoption name name")
   }
 
-  func testUciNewGameCommand() {
-    XCTAssertEqual(EngineCommand.ucinewgame.rawValue, "ucinewgame")
+  @Test func uciNewGameCommand() {
+    #expect(EngineCommand.ucinewgame.rawValue == "ucinewgame")
   }
 
-  func testPositionCommand() {
-    XCTAssertEqual(
+  @Test func positionCommand() {
+    #expect(
       EngineCommand.position(
         .startpos,
         moves: ["e2e4", "c7c6"]
-      ).rawValue,
-      "position startpos moves e2e4 c7c6"
+      ).rawValue == "position startpos moves e2e4 c7c6"
     )
 
-    XCTAssertEqual(
+    #expect(
       EngineCommand.position(
         .fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-      ).rawValue,
-      "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      ).rawValue == "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     )
 
-    XCTAssertEqual(
+    #expect(
       EngineCommand.position(
         .fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
         moves: ["e2e4", "c7c6"]
-      ).rawValue,
-      "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 moves e2e4 c7c6"
+      ).rawValue == "position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 moves e2e4 c7c6"
     )
   }
 
-  func testGoCommand() {
+  @Test func goCommand() {
     let go = EngineCommand.go(
       searchmoves: ["e2e4", "c7c6"],
       ponder: true,
@@ -83,22 +74,22 @@ class EngineCommandTests: XCTestCase {
       infinite: false
     )
 
-    XCTAssertEqual(go.rawValue, "go searchmoves e2e4 c7c6 ponder wtime 5 btime 5 winc 2 binc 2 movestogo 10 depth 15 nodes 100 mate 2 movetime 3")
+    #expect(go.rawValue == "go searchmoves e2e4 c7c6 ponder wtime 5 btime 5 winc 2 binc 2 movestogo 10 depth 15 nodes 100 mate 2 movetime 3")
 
     let goInfinite = EngineCommand.go(infinite: true)
-    XCTAssertEqual(goInfinite.rawValue, "go infinite")
+    #expect(goInfinite.rawValue == "go infinite")
   }
 
-  func testStopCommand() {
-    XCTAssertEqual(EngineCommand.stop.rawValue, "stop")
+  @Test func stopCommand() {
+    #expect(EngineCommand.stop.rawValue == "stop")
   }
 
-  func testPonderhitCommand() {
-    XCTAssertEqual(EngineCommand.ponderhit.rawValue, "ponderhit")
+  @Test func ponderhitCommand() {
+    #expect(EngineCommand.ponderhit.rawValue == "ponderhit")
   }
 
-  func testQuitCommand() {
-    XCTAssertEqual(EngineCommand.quit.rawValue, "quit")
+  @Test func quitCommand() {
+    #expect(EngineCommand.quit.rawValue == "quit")
   }
 
 }

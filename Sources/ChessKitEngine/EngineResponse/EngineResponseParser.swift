@@ -3,9 +3,7 @@
 //  ChessKitEngine
 //
 
-class EngineResponseParser {
-
-  private init() {}
+enum EngineResponseParser {
 
   static func parse(response: String) -> EngineResponse? {
     let tokens = response.split { $0.isWhitespace || $0.isNewline }.map(String.init)

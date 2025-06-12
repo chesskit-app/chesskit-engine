@@ -3,53 +3,47 @@
 //  ChessKitEngineTests
 //
 
-import XCTest
 @testable import ChessKitEngine
+import Testing
 
-class EngineCommandPositionTests: XCTestCase {
+struct EngineCommandPositionTests {
 
-  func testPositionStringRawValue() {
+  @Test func positionStringRawValue() {
     let p = EngineCommand.PositionString.startpos
-    XCTAssertEqual(p.rawValue, "startpos")
+    #expect(p.rawValue == "startpos")
 
     let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
     let f = EngineCommand.PositionString.fen(fen)
-    XCTAssertEqual(f.rawValue, "fen \(fen)")
+    #expect(f.rawValue == "fen \(fen)")
   }
 
-  func testPositionStringRawValueInit() {
-    XCTAssertEqual(
-      EngineCommand.PositionString(rawValue: "startpos"),
-      .startpos
-    )
+  @Test func positionStringRawValueInit() {
+    #expect(EngineCommand.PositionString(rawValue: "startpos") == .startpos)
 
     let fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    XCTAssertEqual(
-      EngineCommand.PositionString(rawValue: "fen \(fen)"),
-      .fen(fen)
-    )
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen)") == .fen(fen))
   }
 
-  func testInvalidFENPositionStrings() {
+  @Test func invalidFENPositionStrings() {
     let fen1 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "fen \(fen1)"))
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen1)") == nil)
 
     let fen2 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w"
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "fen \(fen2)"))
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen2)") == nil)
 
     let fen3 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "fen \(fen3)"))
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen3)") == nil)
 
     let fen4 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -"
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "fen \(fen4)"))
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen4)") == nil)
 
     let fen5 = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0"
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "fen \(fen5)"))
+    #expect(EngineCommand.PositionString(rawValue: "fen \(fen5)") == nil)
   }
 
-  func testInvalidPositionString() {
-    XCTAssertNil(EngineCommand.PositionString(rawValue: "invalid"))
-    XCTAssertNil(EngineCommand.PositionString(rawValue: ""))
+  @Test func invalidPositionString() {
+    #expect(EngineCommand.PositionString(rawValue: "invalid") == nil)
+    #expect(EngineCommand.PositionString(rawValue: "") == nil)
   }
 
 }

@@ -89,15 +89,12 @@ public final class Engine: Sendable {
   /// before you can ask the engine to perform any work.
   ///
   /// - parameter coreCount: The number of processor cores to use for engine
-  /// calculation. The default value is `nil` which uses the number of
-  /// cores available on the device.
+  /// calculation. The default value is `nil` which uses one less than
+  /// the number of cores available on the device.
   /// - parameter multipv: The number of lines the engine should return,
   /// sent via the `"MultiPV"` UCI option.
   ///
-  public func start(
-    coreCount: Int? = nil,
-    multipv: Int = 1
-  ) async {
+  public func start(coreCount: Int? = nil, multipv: Int = 1) async {
     // Setup async stream response if not already set.
     await engineConfigurationActor.setAsyncStream()
 
@@ -155,7 +152,9 @@ public final class Engine: Sendable {
   ///
   @available(*, deprecated, renamed: "set(loggingEnabled:)")
   public func setLoggingEnabled(_ loggingEnabled: Bool) {
-    set(loggingEnabled: loggingEnabled)
+    Task {
+      await set(loggingEnabled: loggingEnabled)
+    }
   }
 
   /// Enable printing logs to console.
@@ -163,10 +162,8 @@ public final class Engine: Sendable {
   /// - parameter loggingEnabled: If set to `true`, engine commands and responses
   ///   will be logged to the console. The default value is `false`.
   ///
-  public func set(loggingEnabled: Bool) {
-    Task {
-      await engineConfigurationActor.set(loggingEnabled: loggingEnabled)
-    }
+  public func set(loggingEnabled: Bool) async {
+    await engineConfigurationActor.set(loggingEnabled: loggingEnabled)
   }
 
   // MARK: Private functions
@@ -201,12 +198,10 @@ public final class Engine: Sendable {
         if await !self.isRunning {
           if parsed == .readyok {
             await self.performInitialSetup(
-              coreCount: coreCount ?? ProcessInfo.processInfo.processorCount,
+              coreCount: coreCount ?? min(1, ProcessInfo.processInfo.processorCount - 1),
               multipv: multipv
             )
-          } else if let next = EngineCommand.nextSetupLoopCommand(
-            given: parsed
-          ) {
+          } else if let next = EngineCommand.nextSetupLoopCommand(given: parsed) {
             await self.send(command: next)
           }
         }
@@ -263,7 +258,9 @@ fileprivate actor EngineConfiguration: Sendable {
   init(loggingEnabled: Bool = false) {
     self.loggingEnabled = loggingEnabled
 
-    Task { await setAsyncStream() }
+    Task {
+      await setAsyncStream()
+    }
   }
 
   func set(loggingEnabled: Bool) async {
