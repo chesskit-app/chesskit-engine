@@ -2,9 +2,9 @@
 
 ### Improvements
 * Commands and responses are now logged using their own synchronous queue to prevent unreadable output when commands and responses were sent simultaneously.
-* `setLoggingEnabled(loggingEnabled:)` has been renamed `set(loggingEnabled:) async`
+* `setLoggingEnabled(loggingEnabled:)` has been renamed `set(loggingEnabled:) async`.
   * The original function remains but is deprecated.
-* Change default `coreCount` in `Engine.start()` to **one less** than the core count (minimum of 1).
+* Change default `coreCount` in `Engine.start()` to **one less** than the device's core count (minimum of 1).
   * This allows a free core for other processing tasks in a multicore environment.
   * Can still be changed with the `coreCount` parameter if desired.
 
