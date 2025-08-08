@@ -26,6 +26,7 @@ NSLock *_lock;
 
   if (self) {
     _lock = [[NSLock alloc] init];
+    _outputBuffer = [NSMutableString string];
     switch (type) {
       case EngineTypeStockfish:
         _engine = new StockfishEngine();
@@ -105,15 +106,30 @@ NSLock *_lock;
 
 # pragma mark Private
 
-- (void)readStdout: (NSNotification*) notification {
-  [_pipeReadHandle readInBackgroundAndNotify];
-
-  NSData *data = [[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
-  NSArray<NSString *> *output = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"\n"];
-
-  [output enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-    [self responseHandler](obj);
-  }];
+- (void)readStdout:(NSNotification*)notification {
+    [_pipeReadHandle readInBackgroundAndNotify];
+    
+    NSData *data = notification.userInfo[NSFileHandleNotificationDataItem];
+    if (!data || data.length == 0) return;
+    
+    NSString *chunk = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (!chunk) return;
+    
+    [self.outputBuffer appendString:chunk];
+    
+    NSArray<NSString *> *lines = [self.outputBuffer componentsSeparatedByString:@"\n"];
+    
+    // Keep the last line in the buffer if it's incomplete
+    NSUInteger lastIndex = lines.count - 1;
+    for (NSUInteger i = 0; i < lastIndex; i++) {
+        NSString *line = lines[i];
+        if (line.length > 0) {
+            [self responseHandler](line);
+        }
+    }
+    
+    // Reset the buffer with the last (possibly partial) line
+    [self.outputBuffer setString:lines[lastIndex]];
 }
 
 @end

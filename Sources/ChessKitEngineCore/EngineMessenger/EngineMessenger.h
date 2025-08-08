@@ -25,6 +25,7 @@ NS_SWIFT_SENDABLE
 /// Engines work asynchronously so use this block to subscribe to
 /// any commands received from the engine.
 @property (nullable) void (^ responseHandler)(NSString * _Nonnull response);
+@property (nonatomic, strong) NSMutableString *outputBuffer;
 
 /// Initializes an engine with the desired type.
 ///
