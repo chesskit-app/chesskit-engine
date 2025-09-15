@@ -52,7 +52,7 @@ public final class Engine: Sendable {
   /// Queue used to synchronously send commands to engine.
   private let commandQueue = DispatchQueue(
     label: "ck-engine-command-queue",
-    qos: .userInteractive
+    qos: .userInitiated
   )
 
   /// Queue used to synchronously log engine commands and responses.
@@ -74,12 +74,22 @@ public final class Engine: Sendable {
     engineConfigurationActor = EngineConfiguration(loggingEnabled: loggingEnabled)
   }
 
-  // This no longer work in an async environment as stop function outlives the deinit function.
-  // Support for async deinit should be added in a future version of Swift (6.2)
-  // https://github.com/swiftlang/swift-evolution/blob/main/proposals/0371-isolated-synchronous-deinit.md
-  //  deinit {
-  //    stop()
-  //  }
+  deinit {
+    Task { [commandQueue, engineConfigurationActor, messenger] in
+      // actions from `stop()` repeated here to avoid capturing `self` inside `deinit`
+      guard await engineConfigurationActor.isRunning else { return }
+
+      commandQueue.sync {
+        messenger.sendCommand(EngineCommand.stop.rawValue)
+        messenger.sendCommand(EngineCommand.quit.rawValue)
+      }
+      messenger.stop()
+
+      await engineConfigurationActor.clearAsyncStream()
+      await engineConfigurationActor.set(isRunning: false)
+      await engineConfigurationActor.set(initialSetupComplete: false)
+    }
+  }
 
   // MARK: Public functions
 
@@ -110,10 +120,8 @@ public final class Engine: Sendable {
   /// Call this to stop all engine calculation and clean up.
   /// After calling ``Engine/stop()``, ``Engine/start(coreCount:multipv:)`` must be called before
   /// sending any more commands with ``Engine/send(command:)``.
-  ///
-  /// - note: As a temporary fix this function must be called before deinitializing the engine.
   public func stop() async {
-    guard await isRunning == true else { return }
+    guard await isRunning else { return }
 
     await send(command: .stop)
     await send(command: .quit)

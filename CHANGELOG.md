@@ -7,6 +7,7 @@
 * Change default `coreCount` in `Engine.start()` to **one less** than the device's core count (minimum of 1).
   * This allows a free core for other processing tasks in a multicore environment.
   * Can still be changed with the `coreCount` parameter if desired.
+* `Engine` now automatically stops related processes when it is deinitialized.
 
 # ChessKitEngine 0.6.0
 Released Friday, May 30, 2025.

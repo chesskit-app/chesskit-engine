@@ -8,9 +8,9 @@ import XCTest
 
 final class Lc0Tests: BaseEngineTests {
 
-  override func setUp() {
+  override func setUp() async throws {
     engineType = .lc0
-    super.setUp()
+    try await super.setUp()
   }
 
 }

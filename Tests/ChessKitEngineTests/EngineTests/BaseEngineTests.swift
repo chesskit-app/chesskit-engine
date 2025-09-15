@@ -35,16 +35,15 @@ class BaseEngineTests: XCTestCase {
   }
 
   /// The engine type to test.
-  nonisolated(unsafe) var engineType: EngineType!
-  nonisolated(unsafe) var engine: Engine!
+  var engineType: EngineType!
+  var engine: Engine!
 
-  override func setUp() {
-    super.setUp()
+  override func setUp() async throws {
+    try await super.setUp()
     engine = Engine(type: engineType)
   }
 
   override func tearDown() async throws {
-    await engine.stop()
     engine = nil
   }
 
@@ -150,5 +149,5 @@ class BaseEngineTests: XCTestCase {
 /// testing on main thread is counter productive.
 @globalActor
 actor EngineTestActor: GlobalActor {
-  static var shared = EngineTestActor()
+  static let shared = EngineTestActor()
 }
