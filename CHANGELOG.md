@@ -1,4 +1,5 @@
-# [unreleased]
+# ChessKitEngine 0.7.0
+Released Monday, September 15, 2025.
 
 ### Improvements
 * Commands and responses are now logged using their own synchronous queue to prevent unreadable output when commands and responses were sent simultaneously.
